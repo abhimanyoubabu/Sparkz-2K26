@@ -13,6 +13,7 @@ import {
   getDoc,
   limit,
 } from "firebase/firestore";
+import { QRCodeSVG } from "qrcode.react";
 import { db } from "@/utils/firebase";
 import Link from "next/link";
 import { toastSuccess, toastError } from "@/utils/common/Toast";
@@ -26,13 +27,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import {
-  ref,
-  getDownloadURL,
-  deleteObject,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { storage } from "@/utils/firebase";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -56,16 +50,24 @@ export default function Register() {
   const [screenshotUrl, setScreenshotUrl] =
     useState<string | null>(null);
 
+  // Google Drive file ID
+  const [screenshotFileId, setScreenshotFileId] =
+    useState<string | null>(null);
+
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [selectedInstruments, setSelectedInstruments] =
     useState<string[]>([]);
 
-  const [isAddingCustom, setIsAddingCustom] = useState(false);
-  const [customInstrument, setCustomInstrument] = useState("");
+  const [isAddingCustom, setIsAddingCustom] =
+    useState(false);
 
-  const [acknowledged, setAcknowledged] = useState(false);
+  const [customInstrument, setCustomInstrument] =
+    useState("");
+
+  const [acknowledged, setAcknowledged] =
+    useState(false);
 
   const [existingRegistrationId, setExistingRegistrationId] =
     useState<string | null>(null);
@@ -77,12 +79,18 @@ export default function Register() {
   const [registrationStatusLoading, setRegistrationStatusLoading] =
     useState(true);
 
-  const { user, loading: authLoading, refetchUserProfile } =
-    useAuth();
+  const {
+    user,
+    loading: authLoading,
+    refetchUserProfile,
+  } = useAuth();
 
   const router = useRouter();
 
-  // TODO: Replace with actual UPI ID
+  // ==================================================
+  // UPI DETAILS
+  // ==================================================
+
   const UPI_ID = "asifabdulla1234@oksbi";
 
   const transactionNote = `Abheri Registration ${formData.bandName
@@ -90,7 +98,7 @@ export default function Register() {
     : ""
     }`;
 
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz24&tn=${encodeURIComponent(
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz24&am=1&cu=INR&tn=${encodeURIComponent(
     transactionNote
   )}`;
 
@@ -196,7 +204,11 @@ export default function Register() {
             db,
             "abheri_registrations"
           ),
-          where("userId", "==", user.uid),
+          where(
+            "userId",
+            "==",
+            user.uid
+          ),
           limit(1)
         );
 
@@ -241,8 +253,14 @@ export default function Register() {
             data.instruments || []
           );
 
+          // Google Drive URL
           setScreenshotUrl(
             data.screenshotUrl || null
+          );
+
+          // Google Drive file ID
+          setScreenshotFileId(
+            data.screenshotFileId || null
           );
 
           setAcknowledged(true);
@@ -285,7 +303,10 @@ export default function Register() {
 
     return () =>
       clearTimeout(timeoutId);
-  }, [formData, selectedInstruments]);
+  }, [
+    formData,
+    selectedInstruments,
+  ]);
 
   // ==================================================
   // HANDLE INPUT
@@ -293,196 +314,262 @@ export default function Register() {
 
   const handleChange = (
     e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement
+      HTMLInputElement
     >
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } =
+      e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // ==================================================
-  // INSTRUMENTS
+  // HANDLE INSTRUMENT DROPDOWN
   // ==================================================
 
-  const addInstrument = (
-    instrument: string
+  const handleDropdownChange = (
+    e: React.ChangeEvent<
+      HTMLSelectElement
+    >
   ) => {
+    const value = e.target.value;
+
+    if (!value) return;
+
+    if (value === "Other") {
+      setIsAddingCustom(true);
+      return;
+    }
+
     if (
-      !selectedInstruments.includes(
+      !selectedInstruments.includes(value)
+    ) {
+      setSelectedInstruments(
+        (prev) => [...prev, value]
+      );
+    }
+
+    e.target.value = "";
+  };
+
+  // ==================================================
+  // ADD CUSTOM INSTRUMENT
+  // ==================================================
+
+  const handleAddCustom = () => {
+    const instrument =
+      customInstrument.trim();
+
+    if (!instrument) {
+      toastError(
+        "Please enter an instrument name."
+      );
+
+      return;
+    }
+
+    if (
+      selectedInstruments.includes(
         instrument
       )
     ) {
-      setSelectedInstruments([
-        ...selectedInstruments,
-        instrument,
-      ]);
+      toastError(
+        "This instrument is already selected."
+      );
+
+      return;
     }
+
+    setSelectedInstruments(
+      (prev) => [
+        ...prev,
+        instrument,
+      ]
+    );
+
+    setCustomInstrument("");
+    setIsAddingCustom(false);
   };
+
+  // ==================================================
+  // REMOVE INSTRUMENT
+  // ==================================================
 
   const removeInstrument = (
     instrument: string
   ) => {
     setSelectedInstruments(
-      selectedInstruments.filter(
-        (i) => i !== instrument
-      )
+      (prev) =>
+        prev.filter(
+          (item) =>
+            item !== instrument
+        )
     );
   };
 
-  const handleDropdownChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const value = e.target.value;
-
-    if (value === "Other") {
-      setIsAddingCustom(true);
-      e.target.value = "";
-    } else if (value) {
-      addInstrument(value);
-      e.target.value = "";
-    }
-  };
-
-  const handleAddCustom = (
-    e:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.FormEvent
-  ) => {
-    e.preventDefault();
-
-    if (customInstrument.trim()) {
-      addInstrument(
-        customInstrument.trim()
-      );
-
-      setCustomInstrument("");
-      setIsAddingCustom(false);
-    }
-  };
-
   // ==================================================
-  // PAYMENT SCREENSHOT UPLOAD
+  // UPLOAD SCREENSHOT TO GOOGLE DRIVE
   // ==================================================
 
-  const handleFileChange = (
+  const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (
-      e.target.files &&
-      e.target.files[0]
+      !e.target.files ||
+      !e.target.files[0]
     ) {
-      const file = e.target.files[0];
+      return;
+    }
 
-      if (
-        file.size >
-        5 * 1024 * 1024
-      ) {
-        toastError(
-          "File size should be less than 5MB"
-        );
+    const file =
+      e.target.files[0];
 
-        return;
-      }
+    // File size
+    if (
+      file.size >
+      5 * 1024 * 1024
+    ) {
+      toastError(
+        "File size should be less than 5MB"
+      );
 
-      if (!file.type.startsWith("image/")) {
-        toastError(
-          "Please upload an image file."
-        );
+      return;
+    }
 
-        return;
-      }
+    // File type
+    if (
+      !file.type.startsWith("image/")
+    ) {
+      toastError(
+        "Please upload an image file."
+      );
 
+      return;
+    }
+
+    try {
       setUploading(true);
       setUploadProgress(0);
       setPaymentScreenshot(file);
 
-      const storageRef = ref(
-        storage,
-        `abheri_payment_screenshots/${Date.now()}_${file.name}`
+      const uploadData =
+        new FormData();
+
+      uploadData.append(
+        "file",
+        file
       );
 
-      const uploadTask =
-        uploadBytesResumable(
-          storageRef,
-          file
+      const response =
+        await fetch(
+          "/api/abheri/upload-payment",
+          {
+            method: "POST",
+            body: uploadData,
+          }
         );
 
-      uploadTask.on(
-        "state_changed",
+      const result =
+        await response.json();
 
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred /
-              snapshot.totalBytes) *
-            100;
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+          "Upload failed"
+        );
+      }
 
-          setUploadProgress(progress);
-        },
-
-        (error) => {
-          console.error(
-            "Upload error:",
-            error
-          );
-
-          toastError(
-            "Upload failed. Please try again."
-          );
-
-          setUploading(false);
-          setPaymentScreenshot(null);
-        },
-
-        () => {
-          getDownloadURL(
-            uploadTask.snapshot.ref
-          ).then((downloadURL) => {
-            setScreenshotUrl(
-              downloadURL
-            );
-
-            setUploading(false);
-
-            toastSuccess(
-              "Screenshot uploaded successfully!"
-            );
-          });
-        }
+      // Google Drive URL
+      setScreenshotUrl(
+        result.url
       );
+
+      // Google Drive file ID
+      setScreenshotFileId(
+        result.fileId
+      );
+
+      setUploadProgress(100);
+
+      toastSuccess(
+        "Screenshot uploaded successfully!"
+      );
+    } catch (error: any) {
+      console.error(
+        "Upload error:",
+        error
+      );
+
+      toastError(
+        error?.message ||
+        "Upload failed. Please try again."
+      );
+
+      setPaymentScreenshot(null);
+      setScreenshotUrl(null);
+      setScreenshotFileId(null);
+    } finally {
+      setUploading(false);
     }
   };
 
   // ==================================================
-  // DELETE SCREENSHOT
+  // DELETE SCREENSHOT FROM GOOGLE DRIVE
   // ==================================================
 
   const handleDeleteFile = async () => {
-    if (screenshotUrl) {
-      try {
-        const fileRef = ref(
-          storage,
-          screenshotUrl
-        );
+    try {
+      if (screenshotFileId) {
+        const response =
+          await fetch(
+            "/api/abheri/upload-payment",
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+              body: JSON.stringify({
+                fileId:
+                  screenshotFileId,
+              }),
+            }
+          );
 
-        await deleteObject(fileRef);
+        const result =
+          await response.json();
 
-        toastSuccess(
-          "File removed."
-        );
-      } catch (error) {
-        console.error(
-          "Delete error:",
-          error
-        );
+        if (!response.ok) {
+          throw new Error(
+            result.error ||
+            "Failed to delete screenshot"
+          );
+        }
       }
-    }
 
-    setPaymentScreenshot(null);
-    setScreenshotUrl(null);
-    setUploading(false);
-    setUploadProgress(0);
+      setPaymentScreenshot(null);
+      setScreenshotUrl(null);
+      setScreenshotFileId(null);
+      setUploading(false);
+      setUploadProgress(0);
+
+      toastSuccess(
+        "File removed."
+      );
+    } catch (error: any) {
+      console.error(
+        "Delete error:",
+        error
+      );
+
+      toastError(
+        error?.message ||
+        "Failed to remove file."
+      );
+    }
   };
 
   // ==================================================
@@ -508,7 +595,7 @@ export default function Register() {
   ) => {
     e.preventDefault();
 
-    // Extra security check
+    // Registration check
     if (!registrationOpen) {
       toastError(
         "Registration is currently closed."
@@ -517,6 +604,7 @@ export default function Register() {
       return;
     }
 
+    // Login check
     if (!user) {
       toastError(
         "Please login first."
@@ -530,7 +618,10 @@ export default function Register() {
     setLoading(true);
 
     try {
-      // Acknowledgement
+      // ==================================================
+      // ACKNOWLEDGEMENT
+      // ==================================================
+
       if (!acknowledged) {
         toastError(
           "Please agree to the rules and regulations."
@@ -541,7 +632,10 @@ export default function Register() {
         return;
       }
 
-      // Required fields
+      // ==================================================
+      // REQUIRED FIELDS
+      // ==================================================
+
       const requiredFields = [
         {
           key: "bandName",
@@ -573,7 +667,9 @@ export default function Register() {
         },
       ];
 
-      for (const field of requiredFields) {
+      for (
+        const field of requiredFields
+      ) {
         if (
           !formData[
           field.key as keyof typeof formData
@@ -589,7 +685,10 @@ export default function Register() {
         }
       }
 
-      // Member validation
+      // ==================================================
+      // MEMBER VALIDATION
+      // ==================================================
+
       const totalMembers =
         parseInt(
           formData.musiciansCount
@@ -659,7 +758,10 @@ export default function Register() {
         return;
       }
 
-      // Screenshot
+      // ==================================================
+      // SCREENSHOT VALIDATION
+      // ==================================================
+
       if (uploading) {
         toastError(
           "Please wait for the screenshot upload to complete."
@@ -680,7 +782,10 @@ export default function Register() {
         return;
       }
 
-      // Duplicate transaction ID
+      // ==================================================
+      // TRANSACTION ID DUPLICATE CHECK
+      // ==================================================
+
       const transactionQuery =
         query(
           collection(
@@ -721,15 +826,23 @@ export default function Register() {
         }
       }
 
-      // Registration data
+      // ==================================================
+      // REGISTRATION DATA
+      // ==================================================
+
       const registrationData = {
         ...formData,
 
         instruments:
           selectedInstruments,
 
+        // Google Drive link
         screenshotUrl:
           screenshotUrl,
+
+        // Google Drive file ID
+        screenshotFileId:
+          screenshotFileId,
 
         userId:
           user.uid,
@@ -741,7 +854,10 @@ export default function Register() {
           new Date(),
       };
 
-      // Update
+      // ==================================================
+      // UPDATE EXISTING REGISTRATION
+      // ==================================================
+
       if (existingRegistrationId) {
         await updateDoc(
           doc(
@@ -757,7 +873,10 @@ export default function Register() {
         );
       }
 
-      // Create
+      // ==================================================
+      // CREATE NEW REGISTRATION
+      // ==================================================
+
       else {
         await addDoc(
           collection(
@@ -766,22 +885,27 @@ export default function Register() {
           ),
           {
             ...registrationData,
-            createdAt: new Date(),
+            createdAt:
+              new Date(),
           }
         );
 
-        const userRef = doc(
-          db,
-          "users",
-          user.uid
-        );
+        const userRef =
+          doc(
+            db,
+            "users",
+            user.uid
+          );
 
-        await updateDoc(userRef, {
-          registeredEvents:
-            arrayUnion(
-              "Abheri Battle of Bands"
-            ),
-        });
+        await updateDoc(
+          userRef,
+          {
+            registeredEvents:
+              arrayUnion(
+                "Abheri Battle of Bands"
+              ),
+          }
+        );
 
         await refetchUserProfile();
 
@@ -790,11 +914,18 @@ export default function Register() {
         );
       }
 
+      // ==================================================
+      // CLEAR LOCAL STORAGE
+      // ==================================================
+
       localStorage.removeItem(
         STORAGE_KEY
       );
 
-      // Reset after new registration
+      // ==================================================
+      // RESET AFTER NEW REGISTRATION
+      // ==================================================
+
       if (!existingRegistrationId) {
         setFormData({
           bandName: "",
@@ -821,6 +952,12 @@ export default function Register() {
           null
         );
 
+        setScreenshotFileId(
+          null
+        );
+
+        setUploadProgress(0);
+
         setIsAddingCustom(
           false
         );
@@ -844,7 +981,7 @@ export default function Register() {
       );
 
       toastError(
-        error.message ||
+        error?.message ||
         "Something went wrong. Please try again."
       );
     } finally {
@@ -1083,7 +1220,7 @@ export default function Register() {
                     name="leaderMobile"
                     value={formData.leaderMobile}
                     onChange={handleChange}
-                    placeholder="Leader mobile number"
+                    placeholder="Band leader mobile number"
                     className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 outline-none focus:border-purple-500 transition"
                   />
                 </div>
@@ -1182,7 +1319,9 @@ export default function Register() {
 
               <select
                 defaultValue=""
-                onChange={handleDropdownChange}
+                onChange={
+                  handleDropdownChange
+                }
                 className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 outline-none focus:border-purple-500 transition"
               >
                 <option
@@ -1218,7 +1357,9 @@ export default function Register() {
                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
 
                   <input
-                    value={customInstrument}
+                    value={
+                      customInstrument
+                    }
                     onChange={(e) =>
                       setCustomInstrument(
                         e.target.value
@@ -1230,7 +1371,9 @@ export default function Register() {
 
                   <button
                     type="button"
-                    onClick={handleAddCustom}
+                    onClick={
+                      handleAddCustom
+                    }
                     className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 font-semibold"
                   >
                     Add
@@ -1239,8 +1382,12 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => {
-                      setIsAddingCustom(false);
-                      setCustomInstrument("");
+                      setIsAddingCustom(
+                        false
+                      );
+                      setCustomInstrument(
+                        ""
+                      );
                     }}
                     className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15"
                   >
@@ -1251,36 +1398,37 @@ export default function Register() {
               )}
 
               {/* Selected */}
-              {selectedInstruments.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-5">
+              {selectedInstruments.length >
+                0 && (
+                  <div className="flex flex-wrap gap-2 mt-5">
 
-                  {selectedInstruments.map(
-                    (instrument) => (
-                      <div
-                        key={instrument}
-                        className="flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-2 text-sm text-purple-200"
-                      >
-                        <span>
-                          {instrument}
-                        </span>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeInstrument(
-                              instrument
-                            )
-                          }
-                          className="text-white/50 hover:text-red-400"
+                    {selectedInstruments.map(
+                      (instrument) => (
+                        <div
+                          key={instrument}
+                          className="flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-2 text-sm text-purple-200"
                         >
-                          ×
-                        </button>
-                      </div>
-                    )
-                  )}
+                          <span>
+                            {instrument}
+                          </span>
 
-                </div>
-              )}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeInstrument(
+                                instrument
+                              )
+                            }
+                            className="text-white/50 hover:text-red-400"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )
+                    )}
+
+                  </div>
+                )}
             </section>
 
             {/* ============================= */}
@@ -1301,32 +1449,46 @@ export default function Register() {
                 </p>
               </div>
 
-              {/* UPI */}
+              {/* UPI PAYMENT CARD */}
               <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-6">
 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
 
-                  <div>
+                  {/* UPI DETAILS */}
+                  <div className="flex-1">
+
                     <p className="text-sm text-white/40 mb-2">
                       UPI ID
                     </p>
 
                     <div className="flex items-center gap-3">
 
-                      <Smartphone className="text-purple-400" />
+                      <Smartphone
+                        className="text-purple-400 shrink-0"
+                        size={22}
+                      />
 
                       <span className="font-mono break-all">
                         {UPI_ID}
                       </span>
 
                     </div>
+
+                    <p className="text-sm text-white/40 mt-3">
+                      Amount:{" "}
+                      <span className="text-white font-semibold">
+                        ₹1,000
+                      </span>
+                    </p>
+
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  {/* BUTTONS */}
+                  <div className="flex flex-col sm:flex-row gap-3">
 
                     <a
                       href={upiLink}
-                      className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 px-5 py-3 font-semibold"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-500 px-5 py-3 font-semibold transition"
                     >
                       <ExternalLink size={17} />
                       Pay via UPI
@@ -1334,12 +1496,68 @@ export default function Register() {
 
                     <button
                       type="button"
-                      onClick={handleCopyUPI}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-5 py-3 font-semibold"
+                      onClick={
+                        handleCopyUPI
+                      }
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-5 py-3 font-semibold transition"
                     >
                       <Copy size={17} />
-                      Copy
+                      Copy UPI
                     </button>
+
+                  </div>
+
+                </div>
+
+                {/* QR CODE */}
+                <div className="mt-8 pt-8 border-t border-white/10">
+
+                  <div className="flex flex-col items-center text-center">
+
+                    <h3 className="text-xl font-bold text-white">
+                      Scan & Pay
+                    </h3>
+
+                    <p className="text-sm text-white/40 mt-2 mb-5">
+                      Scan this QR code using
+                      Google Pay, PhonePe,
+                      Paytm or any UPI app
+                    </p>
+
+                    <div className="bg-white p-4 rounded-2xl shadow-2xl">
+
+                      <QRCodeSVG
+                        value={upiLink}
+                        size={220}
+                        level="H"
+                        includeMargin={true}
+                      />
+
+                    </div>
+
+                    <div className="mt-5">
+
+                      <p className="text-sm text-white/40">
+                        Registration Fee
+                      </p>
+
+                      <p className="text-2xl font-bold text-purple-300 mt-1">
+                        ₹1,000
+                      </p>
+
+                    </div>
+
+                    <div className="mt-3 max-w-full">
+
+                      <p className="text-xs text-white/30">
+                        UPI ID
+                      </p>
+
+                      <p className="text-sm text-purple-300 font-mono break-all">
+                        {UPI_ID}
+                      </p>
+
+                    </div>
 
                   </div>
 
@@ -1347,7 +1565,7 @@ export default function Register() {
 
               </div>
 
-              {/* Transaction */}
+              {/* TRANSACTION ID */}
               <div className="mt-6">
 
                 <label className="block text-sm text-white/70 mb-2">
@@ -1357,15 +1575,23 @@ export default function Register() {
                 <input
                   required
                   name="transactionId"
-                  value={formData.transactionId}
+                  value={
+                    formData.transactionId
+                  }
                   onChange={handleChange}
                   placeholder="Enter UPI transaction ID"
                   className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 font-mono outline-none focus:border-purple-500 transition"
                 />
 
+                <p className="text-xs text-white/30 mt-2">
+                  Enter the transaction/reference
+                  number shown after completing
+                  the payment.
+                </p>
+
               </div>
 
-              {/* Screenshot */}
+              {/* SCREENSHOT */}
               <div className="mt-6">
 
                 <label className="block text-sm text-white/70 mb-2">
@@ -1377,15 +1603,18 @@ export default function Register() {
 
                     <div className="border border-dashed border-white/20 hover:border-purple-500/50 rounded-2xl p-8 text-center transition">
 
-                      <Upload className="mx-auto mb-3 text-white/30" size={40} />
+                      <Upload
+                        className="mx-auto mb-3 text-white/30"
+                        size={40}
+                      />
 
                       <p className="font-semibold">
                         Upload payment screenshot
                       </p>
 
                       <p className="text-sm text-white/40 mt-2">
-                        JPG, PNG or WEBP — Maximum
-                        5MB
+                        JPG, PNG or WEBP —
+                        Maximum 5MB
                       </p>
 
                       <input
@@ -1437,6 +1666,7 @@ export default function Register() {
                   <div className="mt-4">
 
                     <div className="flex justify-between text-xs text-white/40 mb-2">
+
                       <span>
                         Uploading...
                       </span>
@@ -1447,6 +1677,7 @@ export default function Register() {
                         )}
                         %
                       </span>
+
                     </div>
 
                     <div className="h-2 rounded-full bg-white/10 overflow-hidden">
@@ -1464,6 +1695,7 @@ export default function Register() {
                 )}
 
               </div>
+
             </section>
 
             {/* ============================= */}
@@ -1490,9 +1722,10 @@ export default function Register() {
                   htmlFor="acknowledgement"
                   className="text-sm text-white/70 leading-6 cursor-pointer"
                 >
-                  I confirm that all the details
-                  provided are accurate and I
-                  agree to the Abheri Battle of
+                  I confirm that all the
+                  details provided are
+                  accurate and I agree to
+                  the Abheri Battle of
                   Bands rules and regulations.
                 </label>
 
