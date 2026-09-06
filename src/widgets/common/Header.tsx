@@ -61,11 +61,10 @@ export default function Header() {
                       }
                     }
                   }}
-                  className={`relative rounded-full border px-3 py-2 transition duration-300 ${
-                    isSpecial
+                  className={`relative rounded-full border px-3 py-2 transition duration-300 ${isSpecial
                       ? "group border-fuchsia-500/30 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 hover:border-fuchsia-500/60 hover:shadow-[0_0_20px_rgba(236,72,153,0.4)]"
                       : "border-transparent hover:border-white/20 hover:bg-white/5 hover:text-white"
-                  }`}
+                    }`}
                 >
                   {isSpecial ? (
                     <span className="flex items-center gap-2">
@@ -133,11 +132,10 @@ export default function Header() {
                       }
                     }
                   }}
-                  className={`relative rounded-full border px-3 py-2 transition duration-300 ${
-                    isSpecial
+                  className={`relative rounded-full border px-3 py-2 transition duration-300 ${isSpecial
                       ? "group border-fuchsia-500/30 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 hover:border-fuchsia-500/60 hover:shadow-[0_0_20px_rgba(236,72,153,0.4)]"
                       : "border-transparent hover:border-white/20 hover:bg-white/5 hover:text-white"
-                  }`}
+                    }`}
                 >
                   {isSpecial ? (
                     <span className="flex items-center gap-2">
@@ -195,11 +193,10 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-20 bg-[#04050b]/95 backdrop-blur-lg transition-all duration-300 ease-in-out sm:hidden ${
-          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed left-0 right-0 top-[73px] bottom-0 z-20 bg-[#04050b]/95 backdrop-blur-lg transition-all duration-300 ease-in-out sm:hidden ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
       >
-        <div className="flex flex-col items-center justify-center min-h-screen p-6">
+        <div className="flex h-full flex-col items-center justify-start overflow-y-auto p-6 pt-8">
           <nav className="flex flex-col items-center gap-6 w-full max-w-sm">
             {navItems?.map((item, index) => {
               const isSpecial = item.title === "ABHERI";
@@ -233,11 +230,10 @@ export default function Header() {
                       setIsMenuOpen(false);
                     }
                   }}
-                  className={`w-full text-center py-4 text-lg font-medium rounded-2xl border transition-all hover:scale-[1.02] ${
-                    isSpecial
+                  className={`w-full text-center py-4 text-lg font-medium rounded-2xl border transition-all hover:scale-[1.02] ${isSpecial
                       ? "text-white border-fuchsia-500/40 bg-fuchsia-500/10 shadow-[0_0_15px_rgba(236,72,153,0.2)]"
                       : "text-white/90 border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20"
-                  }`}
+                    }`}
                 >
                   {isSpecial ? (
                     <span className="flex items-center justify-center gap-2">
