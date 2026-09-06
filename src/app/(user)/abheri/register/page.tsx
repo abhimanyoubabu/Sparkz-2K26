@@ -83,11 +83,11 @@ export default function Register() {
   const router = useRouter();
 
   // TODO: Replace with actual UPI ID
-  const UPI_ID = "jacsjjacobnellickal-1@oksbi";
+  const UPI_ID = "asifabdulla1234@oksbi";
 
   const transactionNote = `Abheri Registration ${formData.bandName
-      ? `- ${formData.bandName}`
-      : ""
+    ? `- ${formData.bandName}`
+    : ""
     }`;
 
   const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz24&tn=${encodeURIComponent(

@@ -46,10 +46,10 @@ export default function Footer() {
 
               <div>
                 <h4 className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-fuchsia-300">
-                  Sparkz &apos;26
+                  Sparkz 2K26
                 </h4>
                 <p className="mt-1 text-xs text-white/60">
-                  January 19–20 • Campus Arena
+                  October 08–09 • Campus Arena
                 </p>
               </div>
             </motion.div>
