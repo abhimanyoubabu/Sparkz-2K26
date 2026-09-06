@@ -98,7 +98,7 @@ export default function Register() {
     : ""
     }`;
 
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz24&am=1&cu=INR&tn=${encodeURIComponent(
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz2K26&am=1&cu=INR&tn=${encodeURIComponent(
     transactionNote
   )}`;
 
@@ -786,46 +786,34 @@ export default function Register() {
       // TRANSACTION ID DUPLICATE CHECK
       // ==================================================
 
-      const transactionQuery =
-        query(
-          collection(
-            db,
-            "abheri_registrations"
-          ),
-          where(
-            "transactionId",
-            "==",
-            formData.transactionId
-          ),
-          limit(1)
-        );
+      // Check only this user's registrations.
+      // Firestore rules allow users to read their own registrations.
+      const transactionQuery = query(
+        collection(db, "abheri_registrations"),
+        where("userId", "==", user.uid),
+        where("transactionId", "==", formData.transactionId),
+        limit(1)
+      );
 
-      const transactionSnapshot =
-        await getDocs(
-          transactionQuery
-        );
+      const transactionSnapshot = await getDocs(
+        transactionQuery
+      );
 
-      if (
-        !transactionSnapshot.empty
-      ) {
-        const existingDoc =
-          transactionSnapshot.docs[0];
+      if (!transactionSnapshot.empty) {
+        const existingDoc = transactionSnapshot.docs[0];
 
         if (
           !existingRegistrationId ||
-          existingDoc.id !==
-          existingRegistrationId
+          existingDoc.id !== existingRegistrationId
         ) {
           toastError(
             "This Transaction ID has already been used."
           );
 
           setLoading(false);
-
           return;
         }
       }
-
       // ==================================================
       // REGISTRATION DATA
       // ==================================================
