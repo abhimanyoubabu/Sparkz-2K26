@@ -1,0 +1,190 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================
+    // Helper Functions
+    // =========================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(
+        /databases/$(database)/documents/users/$(request.auth.uid)
+      ).data;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && (
+        getUserData().role == 'superAdmin' ||
+        request.auth.token.email in ['joeljoy1237@gmail.com']
+      );
+    }
+
+    function isAbheriAdmin() {
+      return isAuthenticated() && (
+        isSuperAdmin() ||
+        getUserData().role == 'abheriAdmin'
+      );
+    }
+
+
+    // =========================================================
+    // Users Collection
+    // =========================================================
+
+    match /users/{userId} {
+
+      // Authenticated users can read profiles
+      allow read: if isAuthenticated();
+
+      // User can create/update their own profile
+      // Super Admin can also create/update profiles
+      allow create, update: if isOwner(userId) || isSuperAdmin();
+
+      // Only Super Admin can delete users
+      allow delete: if isSuperAdmin();
+    }
+
+
+    // =========================================================
+    // Events Collection
+    // =========================================================
+
+    match /events/{eventId} {
+
+      // Public read access
+      allow read: if true;
+
+      // Authenticated users can write
+      // Development/setup access is also allowed
+      allow write: if isAuthenticated() || true;
+    }
+
+
+    // =========================================================
+    // General Event Registrations
+    // =========================================================
+
+    match /registrations/{regId} {
+
+      // Authenticated users can create registrations
+      allow create: if isAuthenticated();
+
+      // User can read their own registration
+      // Admin and Super Admin can read all registrations
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isSuperAdmin() ||
+        getUserData().role == 'admin'
+      );
+
+      // User can update their own registration
+      // Admin and Super Admin can update registrations
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isSuperAdmin() ||
+        getUserData().role == 'admin'
+      );
+
+      // Only Super Admin can delete
+      allow delete: if isSuperAdmin();
+    }
+
+
+    // =========================================================
+    // Abheri - Battle of Bands Registrations
+    // =========================================================
+
+    match /abheri_registrations/{regId} {
+
+      // -------------------------------------------------------
+      // CREATE
+      // -------------------------------------------------------
+      // Abheri Admin and Super Admin can always create.
+      //
+      // Normal authenticated users can create only when
+      // registrationOpen is TRUE.
+      allow create: if isAuthenticated() && (
+        isAbheriAdmin() ||
+        get(
+          /databases/$(database)/documents/eventSettings/abheri
+        ).data.registrationOpen == true
+      );
+
+
+      // -------------------------------------------------------
+      // READ
+      // -------------------------------------------------------
+      // Users can read their own registration.
+      // Abheri Admin and Super Admin can read all registrations.
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isAbheriAdmin()
+      );
+
+
+      // -------------------------------------------------------
+      // UPDATE
+      // -------------------------------------------------------
+      // Abheri Admin and Super Admin can always update.
+      //
+      // Normal users can update their own registration only
+      // when registration is OPEN.
+      allow update: if isAuthenticated() && (
+        isAbheriAdmin() ||
+        (
+          resource.data.userId == request.auth.uid &&
+          get(
+            /databases/$(database)/documents/eventSettings/abheri
+          ).data.registrationOpen == true
+        )
+      );
+
+
+      // -------------------------------------------------------
+      // DELETE
+      // -------------------------------------------------------
+      // Only Super Admin can delete registrations.
+      allow delete: if isSuperAdmin();
+    }
+
+
+    // =========================================================
+    // Abheri Registration Settings
+    // =========================================================
+    //
+    // This document controls whether Abheri registration
+    // is currently OPEN or CLOSED.
+    //
+    // Firestore document:
+    //
+    // eventSettings
+    //      └── abheri
+    //           └── registrationOpen: true / false
+    //
+    // =========================================================
+
+    match /eventSettings/{settingId} {
+
+      // Registration page can read the status
+      // to show OPEN or CLOSED.
+      allow read: if true;
+
+      // Only Abheri Admin and Super Admin can
+      // create or change the registration status.
+      allow create, update: if isAbheriAdmin();
+
+      // Only Super Admin can delete the settings.
+      allow delete: if isSuperAdmin();
+    }
+
+  }
+}

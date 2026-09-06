@@ -1,0 +1,263 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+
+export default function Hero() {
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const particleCount =
+    typeof window !== "undefined" && window.innerWidth < 400 ? 0 : 8;
+
+  const particles = useMemo(() => {
+    // if not mounted, return an empty array (keeps server markup deterministic).
+    if (typeof window === "undefined") return [];
+    // deterministic pseudo-random generator based on index
+    const seeded = (i: number) => {
+      // deterministic but varied values
+      const s = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+      return s - Math.floor(s);
+    };
+
+    return Array.from({ length: particleCount }).map((_, i) => {
+      const angle = (i / 12) * 360;
+      const delay = i * 0.2;
+      const duration = 12 + seeded(i) * 8;
+      const radius = 140 + seeded(i + 7) * 60; // distance from center
+      return { i, angle, delay, duration, radius };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [particleCount]);
+
+  return (
+    <section className="relative isolate overflow-hidden bg-[#04050b] text-white">
+      {/* Ambient + grid */}
+      {mounted && (
+        <>
+          <div className="pointer-events-none absolute -left-32 -top-24 h-72 w-72 animate-pulse rounded-full bg-indigo-600/25 blur-[120px]" />
+          <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 animate-[pulse_7s_ease-in-out_infinite] rounded-full bg-fuchsia-500/25 blur-[130px]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.05),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(79,70,229,0.12),transparent_38%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:140px_140px] opacity-20" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(14,165,233,0.08),transparent_40%),linear-gradient(240deg,rgba(236,72,153,0.08),transparent_35%)] opacity-60" />
+
+          {/* Circuit overlay */}
+          <div className="pointer-events-none absolute inset-0 mix-blend-screen opacity-25">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(56,189,248,0.12)_1px,transparent_1px),linear-gradient(0deg,rgba(56,189,248,0.08)_1px,transparent_1px),linear-gradient(135deg,rgba(94,234,212,0.08)_1px,transparent_1px)] bg-[size:180px_180px,180px_180px,220px_220px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(56,189,248,0.2),transparent_16%),radial-gradient(circle_at_38%_62%,rgba(94,234,212,0.2),transparent_14%),radial-gradient(circle_at_78%_28%,rgba(236,72,153,0.2),transparent_16%),radial-gradient(circle_at_62%_82%,rgba(244,114,182,0.16),transparent_14%)]" />
+          </div>
+
+          {/* Floating chips (static/deterministic props) */}
+          {[
+            {
+              className:
+                "left-[8%] top-[18%] h-7 w-7 rounded-lg border border-cyan-300/50 bg-cyan-400/20 blur-[1px]",
+              y: -12,
+              rot: 8,
+              dur: 6,
+              scale: 1.04,
+            },
+            {
+              className:
+                "right-[10%] top-[26%] h-9 w-9 rounded-xl border border-fuchsia-300/50 bg-fuchsia-400/15 blur-[1px]",
+              y: 14,
+              rot: -10,
+              dur: 7,
+              scale: 1.05,
+            },
+            {
+              className:
+                "left-1/2 bottom-[18%] h-11 w-11 -translate-x-1/2 rounded-2xl border border-amber-300/50 bg-amber-400/15 blur-[1px]",
+              y: -10,
+              rot: 12,
+              dur: 8,
+              scale: 1.06,
+            },
+            {
+              className:
+                "left-[18%] bottom-[26%] h-6 w-6 rounded-md border border-emerald-300/50 bg-emerald-300/15 blur-[1px]",
+              y: 10,
+              rot: -6,
+              dur: 6.5,
+              scale: 1.03,
+            },
+          ]
+            .slice(0, particleCount + 2)
+            .map((chip, idx) => (
+              <motion.div
+                key={idx}
+                className={`pointer-events-none absolute ${chip.className}`}
+                animate={{
+                  y: [0, chip.y, 0],
+                  rotate: [0, chip.rot, -chip.rot, 0],
+                  scale: [1, chip.scale, 1],
+                }}
+                transition={{
+                  duration: chip.dur,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+        </>
+      )}
+
+      <div className="relative mx-auto max-w-[94rem] flex min-h-[92vh] px-[5vw] flex-col gap-12 pt-10  pb-15 sm:pb-24 md:flex-row md:items-center md:gap-10">
+        {/* Left content */}
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.75, ease: "easeOut" }}
+          className="order-2 w-full sm:max-w-3xl space-y-6 text-center md:order-1 md:w-1/2 md:text-left"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="inline-flex items-center text-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur"
+          >
+            Carmel College of Engineering and Technology presents
+          </motion.div>
+
+          {/* NEW: Spark the date badge! 🔥 */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mx-auto md:mx-0 inline-flex items-center gap-3 rounded-full border border-cyan-300/30 bg-cyan-500/10 px-5 py-3 text-xs font-bold text-cyan-200 backdrop-blur-sm"
+          >
+            <span className="h-1 w-1 sm:h-3 sm:w-3 rounded-full bg-cyan-400 animate-ping" />
+            <span>October 8 - 9, 2026</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="text-3xl font-bold leading-tight text-white sm:text-3xl lg:text-3xl"
+          >
+            <span className="relative block mt-2 text-6xl sm:text-4xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-fuchsia-500 to-amber-400">
+              Sparkz &apos;26
+            </span>
+            Innvovation Unleashed
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.65, ease: "easeOut" }}
+            className="max-w-lg text-[17px] text-white/80 sm:text-[17px]"
+          >
+            The fest where students compete, create, and spark something big.
+          </motion.p>
+
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
+            <Link
+              href="/events"
+              className="group text-[14px] inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-400 px-6 py-3 text-base font-semibold text-white shadow-[0_20px_80px_rgba(99,102,241,0.35)] transition hover:scale-[1.02] hover:shadow-[0_20px_90px_rgba(236,72,153,0.45)]"
+            >
+              Join Now
+              <span className="transition group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
+
+          {/* <div className="grid max-w-2xl sm:w-2.5 grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+            <Stat label="Engineering Tracks" value="Robotics • AI • IoT" />
+            <Stat label="Prize Pool" value="₹5L+" />
+          </div> */}
+        </motion.div>
+
+        {/* Right visual */}
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.75, ease: "easeOut" }}
+          className="order-1 relative flex w-full items-center justify-center md:order-2 md:w-1/2 md:-mt-6"
+        >
+          <div className="relative pl-5 h-46 w-46 sm:h-74 sm:w-74">
+            {mounted &&
+              particles.map((p) => {
+                const angleRad = (p.angle * Math.PI) / 180;
+                const initX = Math.cos(angleRad) * p.radius;
+                const initY = Math.sin(angleRad) * p.radius;
+
+                return (
+                  <motion.div
+                    key={`particle-${p.i}`}
+                    className="pointer-events-none absolute left-1/2 top-1/2"
+                    initial={{
+                      x: initX,
+                      y: initY,
+                      scale: 0,
+                      opacity: 0.2,
+                    }}
+                    animate={{
+                      x: initX,
+                      y: initY,
+                      scale: [0.3, 1.2, 0.6, 0.3],
+                      opacity: [0.2, 0.8, 0.6, 0.2],
+                    }}
+                    transition={{
+                      duration: p.duration,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: p.delay,
+                    }}
+                  >
+                    {p.i % 3 === 0 && (
+                      <div className="h-3 w-3 rounded-full bg-cyan-400 shadow-[0_0_16px_#06b6d4] blur-[1px]" />
+                    )}
+                    {p.i % 3 === 1 && (
+                      <div className="h-2 w-2 rotate-45 border border-fuchsia-400 shadow-[0_0_12px_#ec4899]" />
+                    )}
+                    {p.i % 3 === 2 && (
+                      <div className="h-4 w-4 rounded-sm bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_20px_#f59e0b] blur-[2px]" />
+                    )}
+                  </motion.div>
+                );
+              })}
+
+            {/* Logo container — no circular background, no border */}
+            <motion.div
+              className="relative flex h-full w-full items-center justify-center bg-transparent"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Image
+                src="/sparkz.svg"
+                alt="Sparkz Logo"
+                fill
+                priority
+                className="object-contain drop-shadow-[0_14px_36px_rgba(236,72,153,0.35)]"
+                sizes="(max-width: 768px) 200px, 280px"
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// function Stat({ label, value }: { label: string; value: string }) {
+//   return (
+//     <div className="flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left backdrop-blur">
+//       <span className="text-[11px] uppercase tracking-[0.18em] text-white/60">
+//         {label}
+//       </span>
+//       <span className="text-base font-semibold text-white">{value}</span>
+//     </div>
+//   );
+// }
