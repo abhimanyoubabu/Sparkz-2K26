@@ -1415,7 +1415,7 @@ export default function Register() {
                 <p className="text-sm text-white/40 mt-1">
                   Registration Fee:{" "}
                   <span className="text-white font-semibold">
-                    ₹1,000
+                    ₹1,200
                   </span>
                 </p>
               </div>
@@ -1448,7 +1448,7 @@ export default function Register() {
                     <p className="text-sm text-white/40 mt-3">
                       Amount:{" "}
                       <span className="text-white font-semibold">
-                        ₹1,000
+                        ₹1,200
                       </span>
                     </p>
 
@@ -1513,7 +1513,7 @@ export default function Register() {
                       </p>
 
                       <p className="text-2xl font-bold text-purple-300 mt-1">
-                        ₹1,000
+                        ₹1,200
                       </p>
 
                     </div>
