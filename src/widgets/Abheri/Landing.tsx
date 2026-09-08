@@ -22,7 +22,7 @@ const rulesSections = [
     title: "Eligibility",
     points: [
       "The competition is open to bonafide students of recognized colleges.",
-      "Each band must consist of 5 to 10 members.",
+      "Each band must consist of 5 to 10 members (minimum 2 vocals and 3 instruments).",
       "All participants must carry a valid college ID card.",
       "(2 or 3 passed-out students from the same college can also perform with the band, provided they submit any kind of proof that they belonged to the same college when asked.)",
       "A participant may represent only one band in the competition.",
@@ -34,7 +34,7 @@ const rulesSections = [
       "Each band will be allotted 30 minutes (10-15 mins for performance), including setup and sound check.",
       "Exceeding the time limit will result in negative marking.",
       "Bands may perform songs from any genre.",
-      "Use of pre-recorded backing tracks is strictly prohibited.",
+      " Use of pre-recorded backing tracks and Virtual Studio Technology (VST) are strictly prohibited.",
       "Lyrics and performances must not contain obscene, offensive, or politically provocative content.",
       "Performances may be in English or any Indian language.",
     ],
@@ -93,7 +93,7 @@ const rulesSections = [
   },
 ];
 
-const chiefGuestImage = "/ousepachan_img.png"; // Replace with actual image path/URL
+const chiefGuestImage = "/ouseppachan.png"; // Replace with actual image path/URL
 
 export default function AbheriPage() {
   const [mounted, setMounted] = useState(false);
@@ -200,7 +200,7 @@ export default function AbheriPage() {
               </h1>
               <p className="text-xl text-white/70 max-w-2xl mx-auto">
                 Unleash your band's energy at Sparkz 2K26 – Prize pool up to
-                ₹60,000 | Teams of 6-10 | Reg: ₹1,000
+                ₹60,000 | Teams of 5-10 | Reg: ₹1,200
               </p>
               {abheriRegistered ? (
                 <div
@@ -245,7 +245,7 @@ export default function AbheriPage() {
                   <div className="relative mx-auto w-full max-w-sm lg:max-w-md aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-orange-500/10 group">
                     <Image
                       src={chiefGuestImage}
-                      alt="Manjari"
+                      alt="Ouseppachan"
                       fill
                       className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     />
@@ -261,18 +261,16 @@ export default function AbheriPage() {
                   </div>
 
                   <h2 className="text-4xl font-black leading-tight sm:text-5xl lg:text-7xl">
-                    <span className="text-white">Manjari</span>
+                    <span className="text-white">Ouseppachan</span>
                   </h2>
 
                   <div className="space-y-4">
                     <p className="text-xl text-indigo-100/80 font-medium leading-relaxed">
-                      Renowned Playback Singer, Composer, and Hindustani
-                      Classical & Ghazal Vocalist.
+                      Renowned Film Composer, Music Director, Producer, Violinist & Singer.
                     </p>
                     <p className="text-lg text-white/50 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                      Gracing the stage of Spark at Abheri 2K26. Witness a
-                      mesmerizing performance by one of the most versatile
-                      voices in the industry.
+                      Gracing the stage of Spark at Abheri 2K26, experience the
+                      timeless artistry of a legendary musician whose music continues to resonate across generations..
                     </p>
                   </div>
                 </div>
@@ -282,7 +280,7 @@ export default function AbheriPage() {
         </div>
       </section>
 
-      {/* Competition Judge Section - Sudarshan */}
+      {/* Competition Judge Section - Roshan NC */}
       <section className="relative isolate overflow-hidden pb-20 pt-10 sm:pt-14">
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#04050b]/90 to-[#04050b]" />
         {mounted && (
@@ -305,8 +303,8 @@ export default function AbheriPage() {
                 <div className="w-full lg:w-1/2">
                   <div className="relative mx-auto w-full max-w-sm lg:max-w-md aspect-[4/5] sm:aspect-3/4 lg:aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-fuchsia-500/10 group">
                     <Image
-                      src="/sudarshan.jpg"
-                      alt="Sudarshan"
+                      src="/roshan_nc.png"
+                      alt="Roshan NC"
                       fill
                       className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     />
@@ -322,17 +320,16 @@ export default function AbheriPage() {
                   </div>
 
                   <h2 className="text-4xl font-black leading-tight sm:text-5xl lg:text-7xl">
-                    <span className="text-white">Sudarshan</span>
+                    <span className="text-white">Roshan NC</span>
                   </h2>
 
                   <div className="space-y-4">
                     <p className="text-xl text-indigo-100/80 font-medium leading-relaxed">
-                      Renowned Playback Singer
+                      Acclaimed Musician & Guitarist.
                     </p>
                     <p className="text-lg text-white/50 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                      Bringing his expertise and musical prowess to judge the
-                      performances at Abheri 2K26. Experience the thrill of
-                      being evaluated by one of the industry's finest voices.
+                      Bringing his technical expertise and cinematic music experience to judge the performances at Abheri 2K26.
+                      Elevate your performance under the keen eye of a true industry professional.
                     </p>
                   </div>
                 </div>
@@ -427,7 +424,7 @@ export default function AbheriPage() {
                 <div className="inline-flex flex-wrap justify-center gap-4">
                   <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm font-medium">
                     Reg Fee:{" "}
-                    <span className="text-white font-bold">₹1,000</span> / team
+                    <span className="text-white font-bold">₹1,200</span> / team
                   </span>
                   <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm font-medium">
                     Date:{" "}
