@@ -93,7 +93,7 @@ const rulesSections = [
   },
 ];
 
-const chiefGuestImage = "/ousepachan.png"; // Replace with actual image path/URL
+const chiefGuestImage = "/ousepachan_img.png"; // Replace with actual image path/URL
 
 export default function AbheriPage() {
   const [mounted, setMounted] = useState(false);
