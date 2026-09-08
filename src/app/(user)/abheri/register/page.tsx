@@ -101,7 +101,7 @@ export default function Register() {
     : ""
     }`;
 
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz2K26&am=1&cu=INR&tn=${encodeURIComponent(
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sparkz2K26&am=1200&cu=INR&tn=${encodeURIComponent(
     transactionNote
   )}`;
 
