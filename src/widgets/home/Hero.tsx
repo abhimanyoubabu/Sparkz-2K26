@@ -147,7 +147,7 @@ export default function Hero() {
             className="text-3xl font-bold leading-tight text-white sm:text-3xl lg:text-3xl"
           >
             <span className="relative block mt-2 text-6xl sm:text-4xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-fuchsia-500 to-amber-400">
-              Sparkz &apos;26
+              Sparkz 2K26
             </span>
             Innvovation Unleashed
           </motion.h1>

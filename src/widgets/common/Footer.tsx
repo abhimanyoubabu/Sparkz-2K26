@@ -161,13 +161,7 @@ export default function Footer() {
             <div className="text-xs text-white/40 text-center md:text-right">
               <p>© 2026 Sparkz.</p>
               <p className="mt-1">
-                Crafted with ♥ by the {" "}
-                <Link
-                  href="/credits"
-                  className="text-white/70 hover:text-white transition-all duration-300 font-semibold hover:underline decoration-dotted underline-offset-2 animate-pulse hover:animate-none"
-                >
-                  Tech Team
-                </Link>
+                Crafted with ♥ by the <span className="text-white/70 hover:text-white transition-all duration-300 font-semibold decoration-dotted underline-offset-2 animate-pulse hover:animate-none">Tech Team</span>
               </p>
             </div>
           </div>

@@ -436,13 +436,13 @@ export default function AbheriPage() {
                 {[
                   {
                     title: "Faculty Coordinator",
-                    name: "Ashin Sabu",
-                    phone: "+91 9487752512",
+                    name: "Dr. Kannan C. Bhanu",
+                    phone: "+91 94963 31267",
                   },
                   {
                     title: "Student Coordinator",
-                    name: "Jacs J Jacob",
-                    phone: "+91 8590204413",
+                    name: "Mr. Steev Palliath",
+                    phone: "+91 62358 34190",
                   },
                 ].map((contact, i) => (
                   <div

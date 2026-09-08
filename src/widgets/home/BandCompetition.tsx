@@ -18,21 +18,21 @@ const eventPoints = [
   },
   {
     title: "Easy Registration",
-    body: "Teams of 6-10 members: Just ₹1,000 fee. Date: 8 October 2026. Register now!",
+    body: "Teams of 5-10 members: Just ₹1,200 fee. Date: 8 October 2026. Register now!",
   },
 ];
 
 const guests = [
   {
-    name: "Manjari",
-    role: "Playback Singer | Composer",
-    image: "/manjari.png",
+    name: "Ouseppachan",
+    role: "Playback Singer | Music Director",
+    image: "/ouseppachan.png",
     tag: "Chief Guest & Judge",
   },
   {
-    name: "Sudashan",
-    role: "Playback Singer",
-    image: "/sudarshan.jpg",
+    name: "Roshan NC",
+    role: "Guitarist | Musician",
+    image: "/roshan_nc.png",
     tag: "Competition Judge",
   },
 ];
@@ -103,9 +103,8 @@ export default function BandCompetition() {
                 {eventPoints.map((point, i) => (
                   <div
                     key={i}
-                    className={`p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300 ${
-                      i === 2 ? "sm:col-span-2" : ""
-                    }`}
+                    className={`p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors duration-300 ${i === 2 ? "sm:col-span-2" : ""
+                      }`}
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold">
@@ -163,7 +162,7 @@ export default function BandCompetition() {
                         src={guest.image}
                         alt={guest.name}
                         fill
-                        className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        className="object-cover object-top transition-transform duration-700 group-hover:scale-105 bg-black/100"
                       />
                       {/* Stronger gradient overlay to create space for text */}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#04050b] via-[#04050b]/80 to-transparent" />
