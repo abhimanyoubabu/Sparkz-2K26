@@ -4,6 +4,15 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { toastInfo } from "@/utils/common/Toast";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  limit,
+} from "firebase/firestore";
+import { db } from "@/utils/firebase";
+import { useAuth } from "@/context/AuthContext";
 
 const accentGradient =
   "bg-gradient-to-r from-indigo-500/30 via-fuchsia-500/25 to-amber-400/25";
@@ -88,10 +97,46 @@ const chiefGuestImage = "/manjari.png"; // Replace with actual image path/URL
 
 export default function AbheriPage() {
   const [mounted, setMounted] = useState(false);
+  const { user } = useAuth();
+
+  const [abheriRegistered, setAbheriRegistered] =
+    useState(false);
+
+  const [checkingAbheriRegistration, setCheckingAbheriRegistration] =
+    useState(true);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const checkAbheriRegistration = async () => {
+      if (!user) {
+        setAbheriRegistered(false);
+        setCheckingAbheriRegistration(false);
+        return;
+      }
+
+      try {
+        const q = query(
+          collection(db, "abheri_registrations"),
+          where("userId", "==", user.uid),
+          limit(1)
+        );
+
+        const snapshot = await getDocs(q);
+
+        setAbheriRegistered(!snapshot.empty);
+      } catch (error) {
+        console.error(
+          "Failed to check Abheri registration:",
+          error
+        );
+
+        setAbheriRegistered(false);
+      } finally {
+        setCheckingAbheriRegistration(false);
+      }
+    };
+
+    checkAbheriRegistration();
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-[#04050b] text-white overflow-x-hidden">
@@ -157,12 +202,20 @@ export default function AbheriPage() {
                 Unleash your band's energy at Sparkz 2K26 – Prize pool up to
                 ₹60,000 | Teams of 6-10 | Reg: ₹1,000
               </p>
-              <Link
-                href="/abheri/register"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/15 to-amber-400/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:scale-105 transition-transform"
-              >
-                Register Now
-              </Link>
+              {abheriRegistered ? (
+                <div
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-8 py-3 text-sm font-bold uppercase tracking-widest text-green-300 w-full md:w-auto"
+                >
+                  ✓ Registered
+                </div>
+              ) : (
+                <Link
+                  href="/abheri/register"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-orange-500/20 via-amber-400/15 to-orange-500/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:scale-105 transition-transform w-full md:w-auto"
+                >
+                  Register Now
+                </Link>
+              )}
             </motion.div>
           </div>
         </div>
@@ -414,12 +467,20 @@ export default function AbheriPage() {
                   </div>
                 ))}
               </div>
-              <Link
-                href="/abheri/register"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-orange-500/20 via-amber-400/15 to-orange-500/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:scale-105 transition-transform w-full md:w-auto"
-              >
-                Register Now
-              </Link>
+              {abheriRegistered ? (
+                <div
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-8 py-3 text-sm font-bold uppercase tracking-widest text-green-300 w-full md:w-auto"
+                >
+                  ✓ Registered
+                </div>
+              ) : (
+                <Link
+                  href="/abheri/register"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-orange-500/20 via-amber-400/15 to-orange-500/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:scale-105 transition-transform w-full md:w-auto"
+                >
+                  Register Now
+                </Link>
+              )}
             </motion.div>
           </div>
         </div>

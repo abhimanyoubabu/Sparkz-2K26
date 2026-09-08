@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import {
   collection,
-  addDoc,
   doc,
   updateDoc,
+  setDoc,
   arrayUnion,
   query,
   where,
@@ -71,6 +71,9 @@ export default function Register() {
 
   const [existingRegistrationId, setExistingRegistrationId] =
     useState<string | null>(null);
+
+  const [checkingExistingRegistration, setCheckingExistingRegistration] =
+    useState(true);
 
   // Registration ON/OFF
   const [registrationOpen, setRegistrationOpen] =
@@ -196,92 +199,64 @@ export default function Register() {
 
   useEffect(() => {
     const fetchRegistration = async () => {
-      if (!user) return;
+      if (!user) {
+        setCheckingExistingRegistration(false);
+        return;
+      }
 
       try {
         const q = query(
-          collection(
-            db,
-            "abheri_registrations"
-          ),
-          where(
-            "userId",
-            "==",
-            user.uid
-          ),
+          collection(db, "abheri_registrations"),
+          where("userId", "==", user.uid),
           limit(1)
         );
 
-        const querySnapshot =
-          await getDocs(q);
+        const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          const docSnap =
-            querySnapshot.docs[0];
+          const docSnap = querySnapshot.docs[0];
+          const data = docSnap.data();
 
-          const data =
-            docSnap.data();
-
-          setExistingRegistrationId(
-            docSnap.id
-          );
+          setExistingRegistrationId(docSnap.id);
 
           setFormData({
-            bandName:
-              data.bandName || "",
-            collegeName:
-              data.collegeName || "",
-            managerName:
-              data.managerName || "",
-            managerMobile:
-              data.managerMobile || "",
-            leaderName:
-              data.leaderName || "",
-            leaderMobile:
-              data.leaderMobile || "",
-            musiciansCount:
-              data.musiciansCount || "",
-            vocalistCount:
-              data.vocalistCount || "",
-            instrumentalistCount:
-              data.instrumentalistCount || "",
-            transactionId:
-              data.transactionId || "",
+            bandName: data.bandName || "",
+            collegeName: data.collegeName || "",
+            managerName: data.managerName || "",
+            managerMobile: data.managerMobile || "",
+            leaderName: data.leaderName || "",
+            leaderMobile: data.leaderMobile || "",
+            musiciansCount: data.musiciansCount || "",
+            vocalistCount: data.vocalistCount || "",
+            instrumentalistCount: data.instrumentalistCount || "",
+            transactionId: data.transactionId || "",
           });
 
-          setSelectedInstruments(
-            data.instruments || []
-          );
+          setSelectedInstruments(data.instruments || []);
 
-          // Google Drive URL
-          setScreenshotUrl(
-            data.screenshotUrl || null
-          );
-
-          // Google Drive file ID
-          setScreenshotFileId(
-            data.screenshotFileId || null
-          );
+          setScreenshotUrl(data.screenshotUrl || null);
+          setScreenshotFileId(data.screenshotFileId || null);
 
           setAcknowledged(true);
-
-          toastSuccess(
-            "Loaded your existing registration."
-          );
+        } else {
+          // No Abheri registration exists for this account
+          setExistingRegistrationId(null);
         }
       } catch (error) {
         console.error(
-          "Failed to fetch registration:",
+          "Failed to fetch existing registration:",
           error
         );
 
         toastError(
-          "Failed to fetch existing registration."
+          "Failed to check your Abheri registration."
         );
+      } finally {
+        setCheckingExistingRegistration(false);
       }
     };
 
-    if (!authLoading && user) {
+    if (!authLoading) {
       fetchRegistration();
     }
   }, [user, authLoading]);
@@ -615,6 +590,13 @@ export default function Register() {
       return;
     }
 
+    if (existingRegistrationId) {
+      toastError(
+        "You have already registered for Abheri."
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -866,15 +848,16 @@ export default function Register() {
       // ==================================================
 
       else {
-        await addDoc(
-          collection(
+        await setDoc(
+          doc(
             db,
-            "abheri_registrations"
+            "abheri_registrations",
+            user.uid
           ),
           {
             ...registrationData,
-            createdAt:
-              new Date(),
+            userId: user.uid,
+            createdAt: new Date(),
           }
         );
 

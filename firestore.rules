@@ -99,62 +99,78 @@ service cloud.firestore {
     }
 
 
-    // =========================================================
-    // Abheri - Battle of Bands Registrations
-    // =========================================================
+// =========================================================
+// Abheri - Battle of Bands Registrations
+// =========================================================
 
-    match /abheri_registrations/{regId} {
+match /abheri_registrations/{regId} {
 
-      // -------------------------------------------------------
-      // CREATE
-      // -------------------------------------------------------
-      // Abheri Admin and Super Admin can always create.
-      //
-      // Normal authenticated users can create only when
-      // registrationOpen is TRUE.
-      allow create: if isAuthenticated() && (
-        isAbheriAdmin() ||
-        get(
-          /databases/$(database)/documents/eventSettings/abheri
-        ).data.registrationOpen == true
-      );
+  // -------------------------------------------------------
+  // CREATE
+  // -------------------------------------------------------
+  // A normal user can create ONLY their own document.
+  // The document ID must be their Firebase UID.
+  // A second document cannot be created for the same user.
+  //
+  // Registration must also be OPEN.
 
-
-      // -------------------------------------------------------
-      // READ
-      // -------------------------------------------------------
-      // Users can read their own registration.
-      // Abheri Admin and Super Admin can read all registrations.
-      allow read: if isAuthenticated() && (
-        resource.data.userId == request.auth.uid ||
-        isAbheriAdmin()
-      );
+  allow create: if isAuthenticated()
+    && regId == request.auth.uid
+    && request.resource.data.userId == request.auth.uid
+    && !exists(
+      /databases/$(database)/documents/abheri_registrations/$(request.auth.uid)
+    )
+    && (
+      isAbheriAdmin()
+      ||
+      get(
+        /databases/$(database)/documents/eventSettings/abheri
+      ).data.registrationOpen == true
+    );
 
 
-      // -------------------------------------------------------
-      // UPDATE
-      // -------------------------------------------------------
-      // Abheri Admin and Super Admin can always update.
-      //
-      // Normal users can update their own registration only
-      // when registration is OPEN.
-      allow update: if isAuthenticated() && (
-        isAbheriAdmin() ||
-        (
-          resource.data.userId == request.auth.uid &&
-          get(
-            /databases/$(database)/documents/eventSettings/abheri
-          ).data.registrationOpen == true
-        )
-      );
+  // -------------------------------------------------------
+  // READ
+  // -------------------------------------------------------
+  // Users can read ONLY their own registration.
+  // Abheri Admin / Super Admin can read all.
+
+  allow read: if isAuthenticated() && (
+    regId == request.auth.uid ||
+    isAbheriAdmin()
+  );
 
 
-      // -------------------------------------------------------
-      // DELETE
-      // -------------------------------------------------------
-      // Only Super Admin can delete registrations.
-      allow delete: if isSuperAdmin();
-    }
+  // -------------------------------------------------------
+  // UPDATE
+  // -------------------------------------------------------
+  // Normal users can update ONLY their own registration.
+  // Admins can update any Abheri registration.
+
+  allow update: if isAuthenticated() && (
+    isAbheriAdmin()
+    ||
+    (
+      regId == request.auth.uid
+      &&
+      resource.data.userId == request.auth.uid
+      &&
+      request.resource.data.userId == request.auth.uid
+      &&
+      get(
+        /databases/$(database)/documents/eventSettings/abheri
+      ).data.registrationOpen == true
+    )
+  );
+
+
+  // -------------------------------------------------------
+  // DELETE
+  // -------------------------------------------------------
+  // Only Super Admin can delete registrations.
+
+  allow delete: if isSuperAdmin();
+}
 
 
     // =========================================================
