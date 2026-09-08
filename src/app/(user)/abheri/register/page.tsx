@@ -94,7 +94,7 @@ export default function Register() {
   // UPI DETAILS
   // ==================================================
 
-  const UPI_ID = "asifabdulla1234@oksbi";
+  const UPI_ID = "steevpalliath007@oksbi";
 
   const transactionNote = `Abheri Registration ${formData.bandName
     ? `- ${formData.bandName}`
