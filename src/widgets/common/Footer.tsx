@@ -8,20 +8,20 @@ import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#04050b] border-t border-white/8">
+    <footer className="relative overflow-hidden bg-[#FAF4E8] border-t border-[#DEC077]/50">
       {/* Decorative ambient glows (non-interactive) */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-6 top-12 h-64 w-64 rounded-full bg-indigo-600/18 blur-[120px]" />
-        <div className="absolute right-6 bottom-12 h-64 w-64 rounded-full bg-fuchsia-600/18 blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.12),transparent_50%)]" />
+        <div className="absolute left-6 top-12 h-64 w-64 rounded-full bg-[#DEC077]/20 blur-[120px]" />
+        <div className="absolute right-6 bottom-12 h-64 w-64 rounded-full bg-[#E9D39D]/30 blur-[120px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(222,192,119,0.12),transparent_50%)]" />
       </div>
 
-      {/* Subtle grid overlay for the 'circuit' feel */}
+      {/* Subtle grid overlay */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-12"
+        className="pointer-events-none absolute inset-0 opacity-10"
       >
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(56,189,248,0.06)_1px,transparent_1px),linear-gradient(rgba(56,189,248,0.04)_1px,transparent_1px)] bg-[size:120px_120px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(193,155,76,0.1)_1px,transparent_1px),linear-gradient(rgba(193,155,76,0.08)_1px,transparent_1px)] bg-[size:120px_120px]" />
       </div>
 
       <div className="relative px-[5vw] py-12 md:py-16">
@@ -39,22 +39,22 @@ export default function Footer() {
                   src="/sparkz.svg"
                   alt="Sparkz logo"
                   fill
-                  className="object-contain"
+                  className="object-contain drop-shadow-[0_0_10px_rgba(193,155,76,0.25)]"
                   priority
                 />
               </div>
 
               <div>
-                <h4 className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-fuchsia-300">
+                <h4 className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C]">
                   Sparkz 2K26
                 </h4>
-                <p className="mt-1 text-xs text-white/60">
+                <p className="mt-1 text-xs text-[#221F1A]/70">
                   October 08–09 • Campus Arena
                 </p>
               </div>
             </motion.div>
 
-            <p className="max-w-sm text-sm text-white/40">
+            <p className="max-w-sm text-sm text-[#221F1A]/70">
               A vibrant tech fest for students — challenges, workshops, and
               prizes for tomorrow&apos;s makers.
             </p>
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* Quick links: grouped and accessible */}
           <nav aria-label="Quick links">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white/70">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#C19B4C]">
               Quick Links
             </h3>
 
@@ -76,7 +76,7 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href as string}
-                    className="text-white/60 hover:text-cyan-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 rounded-sm px-1 py-0.5"
+                    className="text-[#221F1A]/75 hover:text-[#C19B4C] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DEC077] rounded-sm px-1 py-0.5"
                   >
                     {label}
                   </Link>
@@ -87,7 +87,7 @@ export default function Footer() {
 
           {/* Socials with clear icons and labels */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white/70">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#C19B4C]">
               Join the Circuit
             </h3>
 
@@ -95,11 +95,11 @@ export default function Footer() {
               {/* Instagram */}
               <Link
                 href="#"
-                className="group inline-flex items-center gap-2 rounded-full px-3 py-2 text-white/80 transition-all hover:text-[#E4405F] hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/40"
+                className="group inline-flex items-center gap-2 rounded-full p-2.5 border border-[#DEC077]/40 bg-[#FAF4E8] text-[#221F1A]/80 transition-all hover:text-[#C19B4C] hover:border-[#DEC077] hover:scale-110 focus:outline-none"
                 aria-label="Instagram"
               >
                 <FaInstagram
-                  className="h-6 w-6 transition-colors"
+                  className="h-5 w-5 transition-colors"
                   aria-hidden
                 />
                 <span className="sr-only">Instagram</span>
@@ -108,25 +108,25 @@ export default function Footer() {
               {/* LinkedIn */}
               <Link
                 href="#"
-                className="group inline-flex items-center gap-2 rounded-full px-3 py-2 text-white/80 transition-all hover:text-[#0A66C2] hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40"
+                className="group inline-flex items-center gap-2 rounded-full p-2.5 border border-[#DEC077]/40 bg-[#FAF4E8] text-[#221F1A]/80 transition-all hover:text-[#C19B4C] hover:border-[#DEC077] hover:scale-110 focus:outline-none"
                 aria-label="LinkedIn"
               >
-                <FaLinkedin className="h-6 w-6 transition-colors" aria-hidden />
+                <FaLinkedin className="h-5 w-5 transition-colors" aria-hidden />
                 <span className="sr-only">LinkedIn</span>
               </Link>
 
               {/* X / Twitter */}
               <Link
                 href="#"
-                className="group inline-flex items-center gap-2 rounded-full px-3 py-2 text-white/80 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/40"
+                className="group inline-flex items-center gap-2 rounded-full p-2.5 border border-[#DEC077]/40 bg-[#FAF4E8] text-[#221F1A]/80 transition-all hover:text-[#C19B4C] hover:border-[#DEC077] hover:scale-110 focus:outline-none"
                 aria-label="Twitter"
               >
-                <FaXTwitter className="h-6 w-6 transition-colors" aria-hidden />
+                <FaXTwitter className="h-5 w-5 transition-colors" aria-hidden />
                 <span className="sr-only">X</span>
               </Link>
             </div>
 
-            <p className="mt-4 text-sm text-white/40 max-w-xs">
+            <p className="mt-4 text-sm text-[#221F1A]/60 max-w-xs">
               Follow us for event updates, behind-the-scenes, and shoutouts.
             </p>
           </div>
@@ -134,7 +134,7 @@ export default function Footer() {
           {/* Call to action */}
           <div className="md:flex md:flex-col md:items-end">
             <div>
-              <p className="mb-4 text-sm text-white/60">
+              <p className="mb-4 text-sm text-[#221F1A]/70">
                 Ready to do something that sparks?
               </p>
               <motion.div
@@ -142,8 +142,8 @@ export default function Footer() {
                 whileTap={{ scale: 0.97 }}
               >
                 <Link
-                  href="#register"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-400 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40"
+                  href="/events"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#E9D39D] hover:bg-[#DEC077] border border-[#DEC077] px-6 py-2.5 text-sm font-bold text-[#221F1A] shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C19B4C]"
                 >
                   Join Now →
                 </Link>
@@ -152,16 +152,16 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom tiny legal bar */}
-        <div className="mt-10 border-t border-white/8 pt-6">
+        {/* Bottom legal bar */}
+        <div className="mt-10 border-t border-[#DEC077]/40 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-[#221F1A]/60">
               Terms • Privacy • Code of Conduct
             </p>
-            <div className="text-xs text-white/40 text-center md:text-right">
+            <div className="text-xs text-[#221F1A]/60 text-center md:text-right">
               <p>© 2026 Sparkz.</p>
               <p className="mt-1">
-                Crafted with ♥ by the <span className="text-white/70 hover:text-white transition-all duration-300 font-semibold decoration-dotted underline-offset-2 animate-pulse hover:animate-none">Tech Team</span>
+                Crafted with ♥ by the <Link href="/credits" className="text-[#C19B4C] hover:text-[#221F1A] transition-all duration-300 font-semibold decoration-dotted underline-offset-2">Tech Team</Link>
               </p>
             </div>
           </div>

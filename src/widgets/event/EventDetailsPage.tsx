@@ -18,7 +18,7 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { shimmer, toBase64 } from "@/utils/imageUtils";
+import { shimmer, toBase64, convertDriveUrl } from "@/utils/imageUtils";
 import GradientBackground from "@/components/ui/GradientBackground";
 import { db } from "@/utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -26,19 +26,18 @@ import { Event } from "@/utils/types/event";
 
 // Loading component for suspense
 function EventDetailsSkeleton() {
-// ... existing skeleton code ...
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+    <div className="relative min-h-screen bg-[#F9F6ED] text-[#221F1A] overflow-hidden">
       <div className="flex flex-col lg:flex-row max-w-7xl mx-auto">
         <div className="w-full lg:w-5/12 p-6 lg:h-screen lg:sticky lg:top-0">
-          <div className="h-full w-full bg-white/10 rounded-3xl animate-pulse" />
+          <div className="h-full w-full bg-[#E9D39D]/20 rounded-3xl animate-pulse" />
         </div>
         <div className="w-full lg:w-7/12 p-6 space-y-8">
-           <div className="h-20 w-3/4 bg-white/10 rounded-2xl animate-pulse" />
-           <div className="h-40 w-full bg-white/10 rounded-2xl animate-pulse" />
+           <div className="h-20 w-3/4 bg-[#E9D39D]/20 rounded-2xl animate-pulse" />
+           <div className="h-40 w-full bg-[#E9D39D]/20 rounded-2xl animate-pulse" />
            <div className="grid grid-cols-2 gap-4">
-             <div className="h-32 bg-white/10 rounded-2xl animate-pulse" />
-             <div className="h-32 bg-white/10 rounded-2xl animate-pulse" />
+             <div className="h-32 bg-[#E9D39D]/20 rounded-2xl animate-pulse" />
+             <div className="h-32 bg-[#E9D39D]/20 rounded-2xl animate-pulse" />
            </div>
         </div>
       </div>
@@ -46,10 +45,7 @@ function EventDetailsSkeleton() {
   );
 }
 
-
-
 // InfoCard component (Bento Style)
-// ... existing InfoCard and other components ...
 interface InfoCardProps {
   icon: React.ReactNode;
   title: string;
@@ -70,20 +66,20 @@ function InfoCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4 }}
-      className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-300 group
+      className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-300 group shadow-sm
         ${variant === "highlight" 
-            ? "bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-500/20" 
-            : "bg-white/3 border-white/5 hover:bg-white/6 hover:border-white/10"
+            ? "bg-[#E9D39D]/40 border-[#DEC077] hover:bg-[#E9D39D]/60" 
+            : "bg-[#FAF4E8] border-[#DEC077]/70 hover:border-[#DEC077] hover:bg-[#FAF4E8]"
         }
       `}
     >
       <div className="flex items-start gap-4">
-        <div className={`p-3 rounded-xl shrink-0 ${variant === 'highlight' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-white/5 text-white/60'}`}>
+        <div className={`p-3 rounded-xl shrink-0 border border-[#DEC077]/50 ${variant === 'highlight' ? 'bg-[#E9D39D] text-[#221F1A]' : 'bg-[#E9D39D]/40 text-[#221F1A]'}`}>
             {icon}
         </div>
         <div>
-            <p className="text-sm font-medium text-white/50 mb-1">{title}</p>
-            <div className="text-lg font-semibold text-white tracking-wide">{value}</div>
+            <p className="text-xs font-semibold text-[#221F1A]/60 uppercase tracking-wider mb-1">{title}</p>
+            <div className="text-lg font-bold text-[#221F1A] tracking-wide">{value}</div>
         </div>
       </div>
     </motion.div>
@@ -107,18 +103,18 @@ function CoordinatorCard({
       href={`https://wa.me/${coordinator.phone}?text=${whatsappMessage}`}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/2 hover:bg-white/8 transition-colors group"
+      className="flex items-center gap-3 p-3 rounded-xl border border-[#DEC077] bg-[#FAF4E8] hover:bg-[#E9D39D]/30 transition-colors group shadow-sm"
     >
-      <div className="h-10 w-10 rounded-full bg-linear-to-br from-indigo-500/20 to-fuchsia-500/20 flex items-center justify-center text-white border border-white/10 text-sm font-bold">
+      <div className="h-10 w-10 rounded-full bg-[#E9D39D] flex items-center justify-center text-[#221F1A] border border-[#DEC077] text-sm font-bold">
         {coordinator.name.charAt(0)}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-white truncate group-hover:text-indigo-300 transition-colors">
+        <p className="text-sm font-bold text-[#221F1A] truncate group-hover:text-[#C19B4C] transition-colors">
           {coordinator.name}
         </p>
-        <p className="text-xs text-white/40">Coordinator</p>
+        <p className="text-xs text-[#221F1A]/60">Coordinator</p>
       </div>
-      <FaWhatsapp className="text-white/30 group-hover:text-green-400 transition-colors" />
+      <FaWhatsapp className="text-[#221F1A]/40 group-hover:text-green-600 transition-colors" />
     </Link>
   );
 }
@@ -136,29 +132,24 @@ function PrizeCard({
   icon: React.ReactNode;
 }) {
   const styles = {
-    gold: "from-yellow-500/10 to-transparent border-yellow-500/20 text-yellow-500",
-    silver: "from-gray-400/10 to-transparent border-gray-400/20 text-gray-400",
-    bronze:
-      "from-orange-700/10 to-transparent border-orange-700/20 text-orange-600",
+    gold: "border-[#C19B4C] text-[#C19B4C] bg-[#FAF4E8]",
+    silver: "border-[#DEC077] text-[#C19B4C] bg-[#FAF4E8]",
+    bronze: "border-[#DEC077] text-[#C19B4C] bg-[#FAF4E8]",
   };
 
   return (
     <div
-      className={`relative rounded-xl border bg-linear-to-b p-4 ${styles[color]}`}
+      className={`relative rounded-xl border p-4 shadow-sm ${styles[color]}`}
     >
       <div className="flex items-center gap-3">
-        <div
-          className={`p-2 rounded-lg bg-white/5 ${styles[color]
-            .split(" ")
-            .pop()}`}
-        >
+        <div className="p-2.5 rounded-lg bg-[#E9D39D] text-[#221F1A] border border-[#DEC077]">
           {icon}
         </div>
         <div>
-          <p className="text-xs font-semibold text-white/50 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-[#221F1A]/60 uppercase tracking-wider">
             {title}
           </p>
-          <p className="text-lg font-bold text-white">{prize}</p>
+          <p className="text-lg font-black text-[#221F1A]">{prize}</p>
         </div>
       </div>
     </div>
@@ -199,7 +190,7 @@ export default function EventPage({ eventId }: { eventId: string }) {
 
   return (
     <Suspense fallback={<EventDetailsSkeleton />}>
-      <div className="min-h-screen text-white selection:bg-indigo-500/30">
+      <div className="min-h-screen text-[#221F1A] selection:bg-[#E9D39D]">
         <GradientBackground />
 
         {/* 
@@ -214,10 +205,10 @@ export default function EventPage({ eventId }: { eventId: string }) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="relative aspect-4/5 w-full mt-12 max-w-lg mx-auto lg:max-w-none rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-indigo-500/10 group"
+              className="relative aspect-4/5 w-full mt-12 max-w-lg mx-auto lg:max-w-none rounded-2xl overflow-hidden border border-[#DEC077] shadow-xl shadow-[#DEC077]/20 group bg-[#FAF4E8]"
             >
               <Image
-                src={event.imageUrl}
+                src={convertDriveUrl(event.imageUrl)}
                 alt={`${event.title} poster`}
                 fill
                 quality={50}
@@ -229,18 +220,18 @@ export default function EventPage({ eventId }: { eventId: string }) {
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 600px"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
+              <div className="absolute inset-0 bg-linear-to-t from-[#221F1A]/60 via-transparent to-transparent opacity-60" />
 
               {/* Category Tag on Image */}
               <div className="absolute top-4 right-4 flex gap-2">
                   {/* Department Tag */}
                   {event.department && (
-                     <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-medium text-white/80 uppercase">
+                     <div className="px-3.5 py-1.5 rounded-full bg-[#E9D39D] border border-[#DEC077] text-xs font-bold text-[#221F1A] uppercase shadow-sm">
                         {event.department}
                     </div>
                   )}
                   {/* Category Tag */}
-                  <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-medium text-white/80 uppercase">
+                  <div className="px-3.5 py-1.5 rounded-full bg-[#E9D39D] border border-[#DEC077] text-xs font-bold text-[#221F1A] uppercase shadow-sm">
                     {event.type}
                   </div>
               </div>
@@ -248,7 +239,7 @@ export default function EventPage({ eventId }: { eventId: string }) {
                {/* Online Banner if applicable */}
                {event.isOnline && (
                 <div className="absolute bottom-4 left-4 right-4">
-                  <div className="w-full py-2 bg-indigo-600/90 backdrop-blur text-center text-sm font-bold tracking-wide uppercase rounded-xl border border-indigo-400/30">
+                  <div className="w-full py-2 bg-[#E9D39D] text-[#221F1A] border border-[#DEC077] text-center text-sm font-bold tracking-wide uppercase rounded-xl shadow-sm">
                     Online Event
                   </div>
                 </div>
@@ -259,7 +250,7 @@ export default function EventPage({ eventId }: { eventId: string }) {
             <div className="hidden lg:grid gap-4 mt-auto">
               {event.coordinators && event.coordinators.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-xs text-white/40 font-medium uppercase tracking-wider">
+                  <p className="text-xs text-[#221F1A]/60 font-semibold uppercase tracking-wider">
                     Event Coordinators
                   </p>
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
@@ -285,8 +276,8 @@ export default function EventPage({ eventId }: { eventId: string }) {
               transition={{ delay: 0.2 }}
               className="space-y-4"
             >
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                <span className="bg-linear-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
+                <span className="bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent">
                   {event.title}
                 </span>
               </h1>
@@ -294,14 +285,14 @@ export default function EventPage({ eventId }: { eventId: string }) {
               <div className="flex flex-wrap gap-3">
                 {/* Event Type / Subtype Tags */}
                 {event.eveType && (
-                    <span className="px-2 py-0.5 rounded text-xs border border-white/10 bg-white/5 text-white/60 uppercase">
+                    <span className="px-3 py-1 rounded-full text-xs border border-[#DEC077] bg-[#E9D39D] text-[#221F1A] font-bold uppercase shadow-sm">
                         {event.eveType === 'ind' ? 'Individual' : 'Team Event'}
                     </span>
                 )}
               </div>
 
-              <div className="max-w-3xl border-l-2 border-indigo-500/30 pl-4">
-                <p className="text-base md:text-lg text-white/70 leading-relaxed inline">
+              <div className="max-w-3xl border-l-2 border-[#DEC077] pl-4">
+                <p className="text-base md:text-lg text-[#221F1A]/80 leading-relaxed inline">
                   {isExpanded || !event.description || event.description.length <= 150
                     ? event.description
                     : `${event.description.slice(0, 150)}...`}
@@ -309,7 +300,7 @@ export default function EventPage({ eventId }: { eventId: string }) {
                 {event.description && event.description.length > 150 && (
                   <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="ml-2 text-indigo-400 hover:text-indigo-300 font-medium text-sm transition-colors cursor-pointer focus:outline-hidden"
+                    className="ml-2 text-[#C19B4C] hover:text-[#221F1A] font-semibold text-sm transition-colors cursor-pointer focus:outline-hidden"
                   >
                     {isExpanded ? "Read Less" : "Read More"}
                   </button>
@@ -361,8 +352,8 @@ export default function EventPage({ eventId }: { eventId: string }) {
                 className="space-y-4"
               >
                 <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-bold">Prize Pool</h2>
-                  <div className="h-px flex-1 bg-white/10" />
+                  <h2 className="text-xl font-bold text-[#221F1A]">Prize Pool</h2>
+                  <div className="h-px flex-1 bg-[#DEC077]/40" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {event.firstPrize && (
@@ -401,13 +392,10 @@ export default function EventPage({ eventId }: { eventId: string }) {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="relative overflow-hidden rounded-2xl p-6 border border-fuchsia-500/20 bg-linear-to-br from-fuchsia-900/10 to-transparent"
+                  className="relative overflow-hidden rounded-2xl p-6 border border-[#DEC077] bg-[#FAF4E8] shadow-sm"
                 >
-                  {/* Decorative Flash */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-3xl rounded-full pointer-events-none" />
-
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-fuchsia-200">
-                    <LuBookOpen className="text-fuchsia-400" />
+                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-[#221F1A]">
+                    <LuBookOpen className="text-[#C19B4C]" />
                     Rules & Requirements
                   </h3>
                   <ul className="space-y-3">
@@ -415,17 +403,17 @@ export default function EventPage({ eventId }: { eventId: string }) {
                       (event.rules as string[]).map((rule, i: number) => (
                         <li
                           key={i}
-                          className="flex gap-3 text-white/80 text-sm leading-relaxed"
+                          className="flex gap-3 text-[#221F1A]/85 text-sm leading-relaxed"
                         >
-                          <span className="text-fuchsia-500 font-bold mt-1">
+                          <span className="text-[#C19B4C] font-bold mt-1">
                             •
                           </span>
                           <span>{rule}</span>
                         </li>
                       ))
                     ) : (
-                      <li className="flex gap-3 text-white/80 text-sm leading-relaxed">
-                        <span className="text-fuchsia-500 font-bold mt-1">
+                      <li className="flex gap-3 text-[#221F1A]/85 text-sm leading-relaxed">
+                        <span className="text-[#C19B4C] font-bold mt-1">
                           •
                         </span>
                         <span>{event.rules}</span>
@@ -437,11 +425,11 @@ export default function EventPage({ eventId }: { eventId: string }) {
               
                {/* Extra Fields Notice */}
                {event.extraFields && event.extraFields.length > 0 && (
-                 <div className="p-4 rounded-xl border border-indigo-500/20 bg-indigo-500/5">
-                     <p className="text-indigo-200 text-sm font-medium mb-2">Registration Information Required:</p>
+                 <div className="p-4 rounded-xl border border-[#DEC077] bg-[#FAF4E8] shadow-sm">
+                     <p className="text-[#221F1A] text-sm font-semibold mb-2">Registration Information Required:</p>
                      <div className="flex flex-wrap gap-2">
                          {event.extraFields.map((f, i) => (
-                             <span key={i} className="px-2 py-1 text-xs rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/10">
+                             <span key={i} className="px-3 py-1 text-xs rounded-full bg-[#E9D39D] text-[#221F1A] border border-[#DEC077] font-medium">
                                  {f.name}
                              </span>
                          ))}
@@ -449,7 +437,7 @@ export default function EventPage({ eventId }: { eventId: string }) {
                  </div>
                )}
 
-              {/* Primary CTA Section - Centered or Prominent */}
+              {/* Primary CTA Section */}
               {event.regLink && (
                 <div className="pt-2">
                   <RegisterButtonSection event={event} />
@@ -458,10 +446,10 @@ export default function EventPage({ eventId }: { eventId: string }) {
             </div>
 
             {/* Mobile Only: Coordinators at bottom */}
-            <div className="lg:hidden space-y-4 pt-8 border-t border-white/10">
+            <div className="lg:hidden space-y-4 pt-8 border-t border-[#DEC077]/40">
               {event.coordinators && event.coordinators.length > 0 && (
                 <>
-                  <p className="text-sm text-white/40 font-medium uppercase tracking-wider">
+                  <p className="text-sm text-[#221F1A]/60 font-semibold uppercase tracking-wider">
                     Event Coordinators
                   </p>
                   <div className="grid grid-cols-1 gap-3">

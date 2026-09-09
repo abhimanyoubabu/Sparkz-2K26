@@ -5,8 +5,14 @@
 
 /* 3. CSS variables */
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #F9F6ED;
+  --foreground: #221F1A;
+  --warm-ivory: #F9F6ED;
+  --light-gold: #E9D39D;
+  --dark-gold: #C19B4C;
+  --primary-dark: #221F1A;
+  --border-gold: #DEC077;
+  --footer-bg: #FAF4E8;
 }
 
 /* 4. Inline theme */
@@ -16,31 +22,54 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-unbounded: var(--font-unbounded);
-  /* <— you're using this, so add it */
   --font-outfit: var(--font-outfit);
-  --color-primary: #ffffff;
-}
-
-/* 5. Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --foreground: #ffffff;
-  }
+  --color-primary: #C19B4C;
+  --color-warm-ivory: #F9F6ED;
+  --color-light-gold: #E9D39D;
+  --color-dark-gold: #C19B4C;
+  --color-primary-dark: #221F1A;
+  --color-border-gold: #DEC077;
+  --color-footer-bg: #FAF4E8;
 }
 
 /* 6. Body style */
 html {
   scroll-behavior: smooth;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #F9F6ED;
+  color: #221F1A;
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #F9F6ED;
+  color: #221F1A;
   font-family: var(--font-unbounded), sans-serif;
   scroll-behavior: smooth;
+}
+
+/* Utility classes for Warm Ivory & Gold Theme */
+.text-gold-accent {
+  background: linear-gradient(135deg, #C19B4C 0%, #DEC077 50%, #C19B4C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pill-btn-gold {
+  background-color: #E9D39D;
+  color: #221F1A;
+  border: 1px solid #DEC077;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+.pill-btn-gold:hover {
+  background-color: #DEC077;
+  box-shadow: 0 4px 14px rgba(193, 155, 76, 0.25);
+}
+
+.card-gold {
+  background-color: #FAF4E8;
+  border: 1px solid #DEC077;
+  border-radius: 1rem;
 }
 
 

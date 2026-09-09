@@ -131,21 +131,18 @@ export default function FeaturedEvents() {
 
   return (
     <section
-      className="relative isolate overflow-hidden bg-[#04050b] py-10 sm:py-15 "
+      className="relative isolate overflow-hidden bg-[#F9F6ED] py-10 sm:py-15"
       ref={sectionRef}
     >
       {/* Background Effects */}
       {mounted && (
         <>
           {/* Gradient Glows */}
-          <div className="pointer-events-none absolute left-[-10%] top-[20%] h-96 w-96 rounded-full bg-indigo-600/20 blur-[140px]" />
-          <div className="hidden sm:block pointer-events-none absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-fuchsia-500/20 blur-[150px]" />
+          <div className="pointer-events-none absolute left-[-10%] top-[20%] h-96 w-96 rounded-full bg-[#DEC077]/20 blur-[140px]" />
+          <div className="hidden sm:block pointer-events-none absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-[#E9D39D]/30 blur-[150px]" />
 
           {/* Subtle Grid Pattern */}
-          <div className="hidden sm:block pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[100px_100px] opacity-30" />
-
-          {/* Radial Gradients */}
-          <div className="hidden sm:block pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(79,70,229,0.1),transparent_50%),radial-gradient(circle_at_60%_60%,rgba(236,72,153,0.08),transparent_45%)]" />
+          <div className="hidden sm:block pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(193,155,76,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(193,155,76,0.03)_1px,transparent_1px)] bg-size-[100px_100px] opacity-30" />
         </>
       )}
 
@@ -154,10 +151,10 @@ export default function FeaturedEvents() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-20 sm:mb-28 text-center text-white text-4xl font-bold leading-tight sm:text-5xl"
+          className="mb-20 sm:mb-28 text-center text-[#221F1A] text-4xl font-bold leading-tight sm:text-5xl"
         >
           Featured{" "}
-          <span className="bg-linear-to-r from-indigo-300 via-fuchsia-300 to-amber-200 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent">
             Events
           </span>
         </motion.h2>
@@ -204,16 +201,14 @@ export default function FeaturedEvents() {
                     className="group block w-full"
                   >
                     <div
-                      className={`relative aspect-4/5 w-full overflow-hidden rounded-3xl border
+                      className={`relative aspect-4/5 w-full overflow-hidden rounded-3xl border bg-[#FAF4E8]
                         ${
                           isCenter
-                            ? "border-fuchsia-400/40 group-hover:scale-105 shadow-2xl shadow-fuchsia-500/30"
-                            : "border-white/10"
+                            ? "border-[#C19B4C] group-hover:scale-105 shadow-2xl shadow-[#DEC077]/40 ring-1 ring-[#DEC077]/50"
+                            : "border-[#DEC077]/60"
                         }
                          transition-all duration-500`}
                     >
-                      {/* Inner glow */}
-                      <div className="absolute inset-0" />
                       <Image
                         src={event.imageUrl || "/event.png"}
                         alt={event.title}
@@ -229,18 +224,20 @@ export default function FeaturedEvents() {
             })}
           </AnimatePresence>
 
-          {/* Glowing nav buttons */}
+          {/* Nav buttons */}
           <button
             onClick={() => setActive((i) => getIndex(i - 1))}
-            className="absolute left-2 sm:left-4 z-40 rounded-full bg-white/5 p-2 sm:p-4 backdrop-blur hover:bg-white/10 hover:scale-110 transition"
+            className="absolute left-2 sm:left-4 z-40 rounded-full bg-[#E9D39D] border border-[#DEC077] p-2 sm:p-4 hover:bg-[#DEC077] hover:scale-110 transition shadow-sm"
+            aria-label="Previous event"
           >
-            <span className="text-2xl sm:text-4xl text-white/80">‹</span>
+            <span className="text-2xl sm:text-4xl text-[#221F1A] font-bold">‹</span>
           </button>
           <button
             onClick={() => setActive((i) => getIndex(i + 1))}
-            className="absolute right-2 sm:right-4 z-40 rounded-full bg-white/5 p-2 sm:p-4 backdrop-blur hover:bg-white/10 hover:scale-110 transition"
+            className="absolute right-2 sm:right-4 z-40 rounded-full bg-[#E9D39D] border border-[#DEC077] p-2 sm:p-4 hover:bg-[#DEC077] hover:scale-110 transition shadow-sm"
+            aria-label="Next event"
           >
-            <span className="text-2xl sm:text-4xl text-white/80">›</span>
+            <span className="text-2xl sm:text-4xl text-[#221F1A] font-bold">›</span>
           </button>
         </div>
       </div>

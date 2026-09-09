@@ -36,21 +36,21 @@ export default function CreditsPage() {
         <meta name="robots" content="index, follow" />
       </Head>
 
-      <div className="min-h-screen bg-[#04050b] text-white">
+      <div className="min-h-screen bg-[#F9F6ED] text-[#221F1A]">
         {/* Background Effects */}
         {mounted && (
           <>
             <div className="pointer-events-none fixed inset-0">
-              <div className="absolute left-[-10%] top-[10%] h-96 w-96 rounded-full bg-indigo-600/25 blur-[140px]" />
-              <div className="absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-fuchsia-500/25 blur-[150px]" />
-              <div className="absolute left-[20%] bottom-[10%] h-96 w-96 rounded-full bg-amber-400/20 blur-[140px]" />
+              <div className="absolute left-[-10%] top-[10%] h-96 w-96 rounded-full bg-[#DEC077]/20 blur-[140px]" />
+              <div className="absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-[#E9D39D]/30 blur-[150px]" />
+              <div className="absolute left-[20%] bottom-[10%] h-96 w-96 rounded-full bg-[#C19B4C]/15 blur-[140px]" />
             </div>
 
             {/* Grid Pattern */}
-            <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] opacity-30" />
+            <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(193,155,76,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(193,155,76,0.06)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
 
             {/* Radial Gradients */}
-            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(79,70,229,0.1),transparent_50%),radial-gradient(circle_at_60%_60%,rgba(236,72,153,0.08),transparent_45%)]" />
+            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(222,192,119,0.1),transparent_50%),radial-gradient(circle_at_60%_60%,rgba(233,211,157,0.15),transparent_45%)]" />
 
             {/* Floating Code Symbols */}
             {[
@@ -60,7 +60,7 @@ export default function CreditsPage() {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className={`pointer-events-none absolute ${item.className} rounded-lg border border-indigo-300/30 bg-indigo-400/10 blur-[1px]`}
+                className={`pointer-events-none absolute ${item.className} rounded-lg border border-[#DEC077]/50 bg-[#E9D39D]/30 blur-[1px]`}
                 animate={{ y: [-10, 15, -10], rotate: [-5, 5, -5] }}
                 transition={{
                   duration: 8 + i,
@@ -69,7 +69,7 @@ export default function CreditsPage() {
                   delay: item.delay,
                 }}
               >
-                <Code className="w-full h-full p-1 text-indigo-300/50" />
+                <Code className="w-full h-full p-1 text-[#C19B4C]" />
               </motion.div>
             ))}
           </>
@@ -85,19 +85,19 @@ export default function CreditsPage() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-bold uppercase tracking-widest backdrop-blur mb-6">
-                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#DEC077] bg-[#E9D39D] px-4 py-2 text-[13px] font-bold uppercase tracking-widest text-[#221F1A] shadow-xs mb-6">
+                <span className="h-2 w-2 rounded-full bg-[#C19B4C] animate-pulse" />
                 Crafted With Passion
               </div>
 
-              <h1 className="text-5xl font-black leading-tight sm:text-6xl lg:text-7xl">
+              <h1 className="text-5xl font-black leading-tight sm:text-6xl lg:text-7xl text-[#221F1A]">
                 Meet the{" "}
-                <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-amber-200 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent">
                   Tech Team
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg text-indigo-100/60 leading-relaxed max-w-2xl mx-auto">
+              <p className="mt-6 text-lg text-[#221F1A]/70 leading-relaxed max-w-2xl mx-auto">
                 The brilliant minds who transformed ideas into reality, one line
                 of code at a time.
               </p>
@@ -110,9 +110,9 @@ export default function CreditsPage() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="text-center"
                 >
-                  <Coffee className="w-8 h-8 mx-auto mb-2 text-amber-400" />
-                  <p className="text-2xl font-black text-white">∞</p>
-                  <p className="text-xs text-white/50 uppercase tracking-wider">
+                  <Coffee className="w-8 h-8 mx-auto mb-2 text-[#C19B4C]" />
+                  <p className="text-2xl font-black text-[#221F1A]">∞</p>
+                  <p className="text-xs text-[#221F1A]/60 uppercase tracking-wider font-semibold">
                     Cups of Coffee
                   </p>
                 </motion.div>
@@ -122,9 +122,9 @@ export default function CreditsPage() {
                   transition={{ duration: 0.5, delay: 0.3 }}
                   className="text-center"
                 >
-                  <Code className="w-8 h-8 mx-auto mb-2 text-indigo-400" />
-                  <p className="text-2xl font-black text-white">10K+</p>
-                  <p className="text-xs text-white/50 uppercase tracking-wider">
+                  <Code className="w-8 h-8 mx-auto mb-2 text-[#C19B4C]" />
+                  <p className="text-2xl font-black text-[#221F1A]">10K+</p>
+                  <p className="text-xs text-[#221F1A]/60 uppercase tracking-wider font-semibold">
                     Lines of Code
                   </p>
                 </motion.div>
@@ -134,9 +134,9 @@ export default function CreditsPage() {
                   transition={{ duration: 0.5, delay: 0.4 }}
                   className="text-center"
                 >
-                  <Heart className="w-8 h-8 mx-auto mb-2 text-red-400" />
-                  <p className="text-2xl font-black text-white">100%</p>
-                  <p className="text-xs text-white/50 uppercase tracking-wider">
+                  <Heart className="w-8 h-8 mx-auto mb-2 text-[#C19B4C]" />
+                  <p className="text-2xl font-black text-[#221F1A]">100%</p>
+                  <p className="text-xs text-[#221F1A]/60 uppercase tracking-wider font-semibold">
                     Made with Love
                   </p>
                 </motion.div>
@@ -153,25 +153,25 @@ export default function CreditsPage() {
                   transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
                   className="group"
                 >
-                  <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur overflow-hidden hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-2">
+                  <div className="relative rounded-3xl border border-[#DEC077] bg-[#FAF4E8] backdrop-blur overflow-hidden hover:border-[#C19B4C] transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                     {/* Decorative Background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-fuchsia-500/10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#DEC077]/10 via-transparent to-[#E9D39D]/15 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
 
                     {/* Animated Border Glow */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/30 via-fuchsia-500/30 to-amber-400/30 blur-xl" />
+                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-[#DEC077]/20 via-[#E9D39D]/30 to-[#DEC077]/20 blur-xl" />
                     </div>
 
                     <div className="relative p-8 sm:p-10">
                       {/* Role Badge */}
-                      <div className="inline-block px-4 py-2 mb-6 rounded-lg bg-cyan-500/20 border border-cyan-500/30 backdrop-blur-md">
-                        <span className="text-cyan-200 text-xs font-bold tracking-widest uppercase">
+                      <div className="inline-block px-4 py-2 mb-6 rounded-lg bg-[#E9D39D] border border-[#DEC077]">
+                        <span className="text-[#221F1A] text-xs font-bold tracking-widest uppercase">
                           {member.role}
                         </span>
                       </div>
 
                       {/* Name */}
-                      <h2 className="text-3xl font-black text-white mb-6 tracking-tight">
+                      <h2 className="text-3xl font-black text-[#221F1A] mb-6 tracking-tight">
                         {member.name}
                       </h2>
 
@@ -180,10 +180,10 @@ export default function CreditsPage() {
                         href={member.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#0A66C2]/20 border border-[#0A66C2]/30 text-white hover:bg-[#0A66C2]/30 hover:border-[#0A66C2]/50 transition-all duration-300 group/link"
+                        className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#E9D39D]/50 border border-[#DEC077] text-[#221F1A] hover:bg-[#E9D39D] hover:border-[#C19B4C] transition-all duration-300 group/link"
                       >
                         <Linkedin className="w-5 h-5 text-[#0A66C2] group-hover/link:scale-110 transition-transform" />
-                        <span className="font-semibold">
+                        <span className="font-bold">
                           Connect on LinkedIn
                         </span>
                         <svg
@@ -211,15 +211,15 @@ export default function CreditsPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur overflow-hidden mb-16"
+              className="relative rounded-3xl border border-[#DEC077] bg-[#FAF4E8] backdrop-blur overflow-hidden mb-16 shadow-sm"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-indigo-500/10 opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#DEC077]/10 via-transparent to-[#E9D39D]/15 opacity-60" />
 
               <div className="relative p-8 sm:p-10 text-center">
-                <h2 className="text-2xl font-black text-white mb-4 tracking-tight">
+                <h2 className="text-2xl font-black text-[#221F1A] mb-4 tracking-tight">
                   Built With Modern Tech
                 </h2>
-                <p className="text-white/60 mb-6">
+                <p className="text-[#221F1A]/70 mb-6 font-medium">
                   Next.js • React • TypeScript • Firebase • Tailwind CSS •
                   Framer Motion
                 </p>
@@ -234,7 +234,7 @@ export default function CreditsPage() {
                   ].map((tech, i) => (
                     <span
                       key={i}
-                      className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/80 font-medium"
+                      className="px-4 py-2 rounded-full bg-[#F9F6ED] border border-[#DEC077]/70 text-sm text-[#221F1A] font-semibold shadow-xs"
                     >
                       {tech}
                     </span>
@@ -252,7 +252,7 @@ export default function CreditsPage() {
             >
               <Link
                 href="/"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/15 to-amber-400/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:border-white/30 hover:bg-white/5 transition-all duration-300 transform hover:-translate-y-1"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#DEC077] bg-[#E9D39D] px-8 py-3.5 text-sm font-bold uppercase tracking-widest text-[#221F1A] shadow-md hover:bg-[#dec077] transition-all duration-300 transform hover:-translate-y-1"
               >
                 <span className="text-xs">←</span>
                 Back to Home

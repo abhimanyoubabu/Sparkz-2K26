@@ -21,19 +21,19 @@ const RegisterButtonSection: React.FC<Props> = ({ event }) => {
             href={event.regLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center justify-center gap-3 w-full rounded-xl bg-linear-to-r from-indigo-600 via-fuchsia-600 to-amber-500 p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_2rem_-0.5rem_#4f46e5]"
+            className="group relative flex items-center justify-center gap-3 w-full rounded-full bg-[#E9D39D] hover:bg-[#DEC077] border border-[#DEC077] p-4 transition-all duration-300 hover:scale-[1.02] shadow-md shadow-[#DEC077]/30 cursor-pointer"
           >
-            <span className="text-lg font-bold text-white">Register Now</span>
-            <FaExternalLinkAlt className="text-white text-sm transition-transform duration-300 group-hover:translate-x-1" />
+            <span className="text-lg font-bold text-[#221F1A]">Register Now</span>
+            <FaExternalLinkAlt className="text-[#221F1A] text-sm transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         ) : (
           // Internal Link
           <Link
             href={`./${event.id}/register`}
-            className="group relative flex items-center justify-center gap-3 w-full rounded-xl bg-linear-to-r from-indigo-600 via-fuchsia-600 to-amber-500 p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_2rem_-0.5rem_#4f46e5]"
+            className="group relative flex items-center justify-center gap-3 w-full rounded-full bg-[#E9D39D] hover:bg-[#DEC077] border border-[#DEC077] p-4 transition-all duration-300 hover:scale-[1.02] shadow-md shadow-[#DEC077]/30 cursor-pointer"
           >
-            <span className="text-lg font-bold text-white">Register Now</span>
-            <FaArrowRight className="text-white transition-transform duration-300 group-hover:translate-x-1" />
+            <span className="text-lg font-bold text-[#221F1A]">Register Now</span>
+            <FaArrowRight className="text-[#221F1A] transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         )}
       </div>

@@ -13,7 +13,54 @@ export const shimmer = (w: number, h: number) => `
   </svg>
 `;
 
+/**
+ * Converts any Google Drive URL variant into a directly embeddable image URL.
+ *
+ * Handles these input formats:
+ *   - https://drive.google.com/file/d/FILE_ID/view
+ *   - https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+ *   - https://drive.google.com/open?id=FILE_ID
+ *   - https://drive.google.com/uc?export=view&id=FILE_ID   (already correct)
+ *   - https://lh3.googleusercontent.com/d/FILE_ID           (already correct)
+ *
+ * All are normalised to:
+ *   https://lh3.googleusercontent.com/d/FILE_ID
+ *
+ * Non-Google-Drive URLs are returned unchanged.
+ */
+export const convertDriveUrl = (url: string): string => {
+  if (!url) return url;
+
+  // Already a direct lh3 thumbnail — no conversion needed
+  if (url.includes("lh3.googleusercontent.com")) return url;
+
+  // Already the uc?export=view format — extract ID and upgrade to lh3
+  const ucMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (ucMatch) {
+    return `https://lh3.googleusercontent.com/d/${ucMatch[1]}`;
+  }
+
+  // Sharing/view link: https://drive.google.com/file/d/FILE_ID/...
+  const fileMatch = url.match(
+    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
+  );
+  if (fileMatch) {
+    return `https://lh3.googleusercontent.com/d/${fileMatch[1]}`;
+  }
+
+  // open?id= format
+  const openMatch = url.match(
+    /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/
+  );
+  if (openMatch) {
+    return `https://lh3.googleusercontent.com/d/${openMatch[1]}`;
+  }
+
+  return url;
+};
+
 export const toBase64 = (str: string) =>
+
     typeof window === 'undefined'
         ? Buffer.from(str).toString('base64')
         : window.btoa(str);

@@ -6,20 +6,21 @@ export default function GradientBackground() {
       className="fixed inset-0 overflow-hidden pointer-events-none -z-50"
       aria-hidden="true"
     >
-      <div className="absolute inset-0 bg-[#020205]" />
+      <div className="absolute inset-0 bg-[#F9F6ED]" />
         
-      {/* Soft Ambient Glows */}
+      {/* Soft Ambient Gold Glows */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-600/10 rounded-full blur-[120px]" />
+          <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-[#DEC077]/20 rounded-full blur-[140px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-[#E9D39D]/30 rounded-full blur-[140px]" />
+          <div className="absolute top-[35%] right-[20%] w-[30%] h-[30%] bg-[#C19B4C]/10 rounded-full blur-[120px]" />
       </div>
 
-      {/* Grid pattern overlay */}
+      {/* Subtle Gold Grid pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.04]"
          style={{
-          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
-          backgroundSize: "50px 50px",
+          backgroundImage: `linear-gradient(#C19B4C 1px, transparent 1px), linear-gradient(90deg, #C19B4C 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
         }}
       />
     </div>

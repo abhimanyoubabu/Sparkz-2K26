@@ -138,21 +138,21 @@ export default function ContactPage() {
         />
       </Head>
 
-      <div className="min-h-screen bg-[#04050b] text-white">
+      <div className="min-h-screen bg-[#F9F6ED] text-[#221F1A]">
         {/* Background Effects */}
         {mounted && (
           <>
             <div className="pointer-events-none fixed inset-0">
-              <div className="absolute left-[-10%] top-[10%] h-96 w-96 rounded-full bg-indigo-600/25 blur-[140px]" />
-              <div className="absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-fuchsia-500/25 blur-[150px]" />
-              <div className="absolute left-[20%] bottom-[10%] h-96 w-96 rounded-full bg-amber-400/20 blur-[140px]" />
+              <div className="absolute left-[-10%] top-[10%] h-96 w-96 rounded-full bg-[#DEC077]/20 blur-[140px]" />
+              <div className="absolute right-[-5%] top-[30%] h-96 w-96 rounded-full bg-[#E9D39D]/30 blur-[150px]" />
+              <div className="absolute left-[20%] bottom-[10%] h-96 w-96 rounded-full bg-[#C19B4C]/15 blur-[140px]" />
             </div>
 
             {/* Grid Pattern */}
-            <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] opacity-30" />
+            <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(193,155,76,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(193,155,76,0.06)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
 
             {/* Radial Gradients */}
-            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(79,70,229,0.1),transparent_50%),radial-gradient(circle_at_60%_60%,rgba(236,72,153,0.08),transparent_45%)]" />
+            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(222,192,119,0.1),transparent_50%),radial-gradient(circle_at_60%_60%,rgba(233,211,157,0.15),transparent_45%)]" />
           </>
         )}
 
@@ -166,19 +166,19 @@ export default function ContactPage() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-bold uppercase tracking-widest backdrop-blur mb-6">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#DEC077] bg-[#E9D39D] px-4 py-2 text-[13px] font-bold uppercase tracking-widest text-[#221F1A] shadow-xs mb-6">
+                <span className="h-2 w-2 rounded-full bg-[#C19B4C] animate-pulse" />
                 Get in Touch
               </div>
 
-              <h1 className="text-5xl font-black leading-tight sm:text-6xl lg:text-7xl">
+              <h1 className="text-5xl font-black leading-tight sm:text-6xl lg:text-7xl text-[#221F1A]">
                 For more{" "}
-                <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-amber-200 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent">
                   info
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg text-indigo-100/60 leading-relaxed max-w-2xl mx-auto">
+              <p className="mt-6 text-lg text-[#221F1A]/70 leading-relaxed max-w-2xl mx-auto">
                 Have questions? Our coordinators are here to help. Reach out to
                 us anytime!
               </p>
@@ -194,30 +194,30 @@ export default function ContactPage() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="group"
                 >
-                  <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur overflow-hidden hover:border-white/20 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-2">
+                  <div className="relative rounded-3xl border border-[#DEC077] bg-[#FAF4E8] backdrop-blur overflow-hidden hover:border-[#C19B4C] transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                     {/* Decorative Background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-fuchsia-500/10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#DEC077]/10 via-transparent to-[#E9D39D]/15 opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
 
                     {/* Animated Border Glow */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/30 via-fuchsia-500/30 to-amber-400/30 blur-xl" />
+                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-[#DEC077]/20 via-[#E9D39D]/30 to-[#DEC077]/20 blur-xl" />
                     </div>
 
                     <div className="relative p-8 sm:p-10">
                       {/* Role Badge */}
-                      <div className="inline-block px-4 py-2 mb-6 rounded-lg bg-indigo-500/20 border border-indigo-500/30 backdrop-blur-md">
-                        <span className="text-indigo-200 text-xs font-bold tracking-widest uppercase">
+                      <div className="inline-block px-4 py-2 mb-6 rounded-lg bg-[#E9D39D] border border-[#DEC077]">
+                        <span className="text-[#221F1A] text-xs font-bold tracking-widest uppercase">
                           {coordinator.role}
                         </span>
                       </div>
 
                       {/* Name */}
                       <div className="flex items-start gap-3 mb-6">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 flex items-center justify-center border border-white/10">
-                          <User className="w-6 h-6 text-indigo-300" />
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E9D39D]/50 flex items-center justify-center border border-[#DEC077]">
+                          <User className="w-6 h-6 text-[#C19B4C]" />
                         </div>
                         <div>
-                          <h3 className="text-2xl font-black text-white tracking-tight">
+                          <h3 className="text-2xl font-black text-[#221F1A] tracking-tight">
                             {coordinator.name}
                           </h3>
                         </div>
@@ -228,12 +228,12 @@ export default function ContactPage() {
                         {/* Phone */}
                         <a
                           href={`tel:${coordinator.phone.replace(/\s/g, "")}`}
-                          className="flex items-center gap-3 text-white/70 hover:text-white transition-colors group/link"
+                          className="flex items-center gap-3 text-[#221F1A]/80 hover:text-[#C19B4C] transition-colors group/link"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover/link:bg-emerald-500/20 transition-colors">
-                            <Phone className="w-5 h-5 text-emerald-400" />
+                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E9D39D]/40 flex items-center justify-center border border-[#DEC077]/60 group-hover/link:bg-[#E9D39D] transition-colors">
+                            <Phone className="w-5 h-5 text-[#C19B4C]" />
                           </div>
-                          <span className="text-lg font-semibold">
+                          <span className="text-lg font-bold">
                             {coordinator.phone}
                           </span>
                         </a>
@@ -241,12 +241,12 @@ export default function ContactPage() {
                         {/* Email */}
                         <a
                           href={`mailto:${coordinator.email}`}
-                          className="flex items-center gap-3 text-white/70 hover:text-white transition-colors group/link"
+                          className="flex items-center gap-3 text-[#221F1A]/80 hover:text-[#C19B4C] transition-colors group/link"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-fuchsia-500/10 flex items-center justify-center border border-fuchsia-500/20 group-hover/link:bg-fuchsia-500/20 transition-colors">
-                            <Mail className="w-5 h-5 text-fuchsia-400" />
+                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E9D39D]/40 flex items-center justify-center border border-[#DEC077]/60 group-hover/link:bg-[#E9D39D] transition-colors">
+                            <Mail className="w-5 h-5 text-[#C19B4C]" />
                           </div>
-                          <span className="text-sm">{coordinator.email}</span>
+                          <span className="text-sm font-medium">{coordinator.email}</span>
                         </a>
                       </div>
                     </div>
@@ -260,41 +260,41 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur overflow-hidden"
+              className="relative rounded-3xl border border-[#DEC077] bg-[#FAF4E8] backdrop-blur overflow-hidden shadow-sm"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-indigo-500/10 opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#DEC077]/10 via-transparent to-[#E9D39D]/15 opacity-60" />
 
               <div className="relative p-8 sm:p-10">
-                <h2 className="text-2xl font-black text-white mb-8 tracking-tight">
+                <h2 className="text-2xl font-black text-[#221F1A] mb-8 tracking-tight">
                   General Information
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Address */}
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                      <MapPin className="w-5 h-5 text-indigo-400" />
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E9D39D]/40 flex items-center justify-center border border-[#DEC077]/60">
+                      <MapPin className="w-5 h-5 text-[#C19B4C]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-1">
+                      <h3 className="text-sm font-bold text-[#221F1A]/60 uppercase tracking-wider mb-1">
                         Location
                       </h3>
-                      <p className="text-white/90">{contactInfo.address}</p>
+                      <p className="text-[#221F1A] font-medium">{contactInfo.address}</p>
                     </div>
                   </div>
 
                   {/* Email */}
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-fuchsia-500/10 flex items-center justify-center border border-fuchsia-500/20">
-                      <Mail className="w-5 h-5 text-fuchsia-400" />
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E9D39D]/40 flex items-center justify-center border border-[#DEC077]/60">
+                      <Mail className="w-5 h-5 text-[#C19B4C]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-1">
+                      <h3 className="text-sm font-bold text-[#221F1A]/60 uppercase tracking-wider mb-1">
                         General Email
                       </h3>
                       <a
                         href={`mailto:${contactInfo.generalEmail}`}
-                        className="text-white/90 hover:text-white transition-colors"
+                        className="text-[#221F1A] font-medium hover:text-[#C19B4C] transition-colors"
                       >
                         {contactInfo.generalEmail}
                       </a>
@@ -303,9 +303,9 @@ export default function ContactPage() {
 
                   {/* Website */}
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#E9D39D]/40 flex items-center justify-center border border-[#DEC077]/60">
                       <svg
-                        className="w-5 h-5 text-amber-400"
+                        className="w-5 h-5 text-[#C19B4C]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -319,10 +319,10 @@ export default function ContactPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-white/70 uppercase tracking-wider mb-1">
+                      <h3 className="text-sm font-bold text-[#221F1A]/60 uppercase tracking-wider mb-1">
                         Website
                       </h3>
-                      <p className="text-white/90">{contactInfo.website}</p>
+                      <p className="text-[#221F1A] font-medium">{contactInfo.website}</p>
                     </div>
                   </div>
                 </div>
@@ -336,12 +336,12 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="mt-16 text-center"
             >
-              <p className="text-white/60 mb-6">
+              <p className="text-[#221F1A]/70 mb-6 font-medium">
                 Ready to be part of Sparkz &apos;26?
               </p>
               <a
                 href="/events"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/15 to-amber-400/20 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white/90 backdrop-blur hover:border-white/30 hover:bg-white/5 transition-all duration-300 transform hover:-translate-y-1"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#DEC077] bg-[#E9D39D] px-8 py-3.5 text-sm font-bold uppercase tracking-widest text-[#221F1A] shadow-md hover:bg-[#dec077] transition-all duration-300 transform hover:-translate-y-1"
               >
                 Explore Events
                 <span className="text-xs">→</span>

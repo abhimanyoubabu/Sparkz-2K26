@@ -67,13 +67,13 @@ export default function CountdownTimer({
         animate={{ opacity: 1, scale: 1 }}
         className="relative"
       >
-        <div className="absolute -inset-4 bg-linear-to-r from-gray-700/20 to-gray-800/20 rounded-2xl blur-xl opacity-60" />
-        <div className="relative rounded-xl border border-gray-700/30 bg-linear-to-br from-gray-900/40 to-gray-800/20 p-6 backdrop-blur-sm">
+        <div className="absolute -inset-4 bg-linear-to-r from-[#DEC077]/20 to-[#E9D39D]/20 rounded-2xl blur-xl opacity-60" />
+        <div className="relative rounded-xl border border-[#DEC077] bg-[#FAF4E8] p-6 backdrop-blur-sm shadow-sm">
           <div className="flex items-center justify-center gap-3">
-            <div className="rounded-full bg-linear-to-r from-gray-700 to-gray-800 p-3">
-              <FaClock className="text-gray-400 text-xl" />
+            <div className="rounded-full bg-[#E9D39D] p-3">
+              <FaClock className="text-[#C19B4C] text-xl" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-300">
+            <h3 className="text-lg font-semibold text-[#221F1A]">
               Registration Closed
             </h3>
           </div>
@@ -104,8 +104,8 @@ export default function CountdownTimer({
             isCritical
               ? "from-red-500/20 via-orange-500/20 to-amber-500/20"
               : isUrgent
-              ? "from-orange-500/20 to-amber-500/20"
-              : "from-indigo-500/20 via-fuchsia-500/20 to-amber-500/20"
+              ? "from-amber-500/20 to-[#DEC077]/30"
+              : "from-[#DEC077]/20 via-[#E9D39D]/30 to-[#DEC077]/20"
           } blur-xl transition-all duration-500 ${
             isHovered ? "opacity-80 scale-110" : "opacity-50"
           }`}
@@ -115,12 +115,12 @@ export default function CountdownTimer({
         {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={i}
-            className={`absolute h-0.5 w-0.5 rounded-full ${
+            className={`absolute h-1 w-1 rounded-full ${
               isCritical
                 ? "bg-red-400/60"
                 : isUrgent
                 ? "bg-orange-400/60"
-                : "bg-cyan-400/40"
+                : "bg-[#C19B4C]/50"
             }`}
             initial={{
               x: Math.sin(i * 45) * 50 + "%",
@@ -143,31 +143,31 @@ export default function CountdownTimer({
       </div>
 
       {/* Main content */}
-      <div className="relative rounded-2xl border border-white/10 bg-linear-to-b from-white/3 to-transparent p-6 backdrop-blur-sm">
+      <div className="relative rounded-2xl border border-[#DEC077] bg-[#FAF4E8]/90 p-6 backdrop-blur-sm shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <div
-            className={`rounded-full p-2 ${
+            className={`rounded-full p-2.5 ${
               isCritical
-                ? "bg-linear-to-r from-red-500/20 to-orange-500/20"
+                ? "bg-red-100 text-red-600"
                 : isUrgent
-                ? "bg-linear-to-r from-orange-500/20 to-amber-500/20"
-                : "bg-linear-to-r from-indigo-500/20 to-fuchsia-500/20"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-[#E9D39D] text-[#C19B4C]"
             }`}
           >
             {isCritical ? (
-              <FaFire className="text-orange-400 text-lg animate-pulse" />
+              <FaFire className="text-red-500 text-lg animate-pulse" />
             ) : (
-              <FaRocket className="text-cyan-400 text-lg" />
+              <FaRocket className="text-[#C19B4C] text-lg" />
             )}
           </div>
           <h3
-            className={`text-lg font-semibold ${
+            className={`text-lg font-bold ${
               isCritical
-                ? "text-orange-300"
+                ? "text-red-600"
                 : isUrgent
-                ? "text-amber-300"
-                : "text-cyan-300"
+                ? "text-amber-700"
+                : "text-[#221F1A]"
             } uppercase tracking-wider`}
           >
             {isCritical
@@ -199,33 +199,33 @@ export default function CountdownTimer({
                     ? "bg-linear-to-r from-red-500/30 to-orange-500/30"
                     : isUrgent
                     ? "bg-linear-to-r from-orange-500/30 to-amber-500/30"
-                    : "bg-linear-to-r from-indigo-500/30 to-fuchsia-500/30"
+                    : "bg-[#DEC077]/30"
                 }`}
               />
 
               {/* Time unit card */}
-              <div className="relative rounded-xl border border-white/10 bg-linear-to-b from-white/5 to-transparent p-4 backdrop-blur-sm">
+              <div className="relative rounded-xl border border-[#DEC077]/60 bg-[#F9F6ED] p-4 backdrop-blur-sm shadow-xs">
                 <motion.p
                   key={unit.value}
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
-                  className={`text-3xl sm:text-4xl font-bold text-center mb-2 ${
+                  className={`text-3xl sm:text-4xl font-extrabold text-center mb-2 ${
                     isCritical
-                      ? "text-red-300"
+                      ? "text-red-600"
                       : isUrgent
-                      ? "text-amber-300"
-                      : "bg-linear-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent"
+                      ? "text-amber-600"
+                      : "bg-linear-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent"
                   }`}
                 >
                   {unit.value.toString().padStart(2, "0")}
                 </motion.p>
                 <p
-                  className={`text-xs font-medium uppercase tracking-wider text-center ${
+                  className={`text-xs font-semibold uppercase tracking-wider text-center ${
                     isCritical
-                      ? "text-red-400/80"
+                      ? "text-red-600/80"
                       : isUrgent
-                      ? "text-amber-400/80"
-                      : "text-white/60"
+                      ? "text-amber-600/80"
+                      : "text-[#221F1A]/70"
                   }`}
                 >
                   {unit.label}
@@ -241,7 +241,7 @@ export default function CountdownTimer({
                         ? "bg-linear-to-r from-red-500/50 to-orange-500/50"
                         : isUrgent
                         ? "bg-linear-to-r from-orange-500/50 to-amber-500/50"
-                        : "bg-linear-to-r from-indigo-500/50 to-fuchsia-500/50"
+                        : "bg-linear-to-r from-[#DEC077]/60 to-[#C19B4C]/60"
                     }`}
                   />
                 </div>
@@ -254,19 +254,19 @@ export default function CountdownTimer({
           <div
             className={`h-2 w-2 rounded-full animate-pulse ${
               isCritical
-                ? "bg-red-400"
+                ? "bg-red-500"
                 : isUrgent
-                ? "bg-amber-400"
-                : "bg-cyan-400"
+                ? "bg-amber-500"
+                : "bg-[#C19B4C]"
             }`}
           />
           <p
-            className={`text-xs ${
+            className={`text-xs font-medium ${
               isCritical
-                ? "text-red-300"
+                ? "text-red-600"
                 : isUrgent
-                ? "text-amber-300"
-                : "text-cyan-300"
+                ? "text-amber-700"
+                : "text-[#221F1A]/80"
             }`}
           >
             {isCritical

@@ -37,27 +37,26 @@ export default function Hero() {
   }, [particleCount]);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#04050b] text-white">
+    <section className="relative isolate overflow-hidden bg-[#F9F6ED] text-[#221F1A]">
       {/* Ambient + grid */}
       {mounted && (
         <>
-          <div className="pointer-events-none absolute -left-32 -top-24 h-72 w-72 animate-pulse rounded-full bg-indigo-600/25 blur-[120px]" />
-          <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 animate-[pulse_7s_ease-in-out_infinite] rounded-full bg-fuchsia-500/25 blur-[130px]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.05),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(79,70,229,0.12),transparent_38%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:140px_140px] opacity-20" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(14,165,233,0.08),transparent_40%),linear-gradient(240deg,rgba(236,72,153,0.08),transparent_35%)] opacity-60" />
+          <div className="pointer-events-none absolute -left-32 -top-24 h-72 w-72 animate-pulse rounded-full bg-[#DEC077]/25 blur-[120px]" />
+          <div className="pointer-events-none absolute right-0 top-10 h-80 w-80 animate-[pulse_7s_ease-in-out_infinite] rounded-full bg-[#E9D39D]/30 blur-[130px]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(222,192,119,0.12),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(233,211,157,0.15),transparent_38%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(193,155,76,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(193,155,76,0.04)_1px,transparent_1px)] bg-[size:140px_140px] opacity-30" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(222,192,119,0.08),transparent_40%),linear-gradient(240deg,rgba(193,155,76,0.06),transparent_35%)] opacity-60" />
 
           {/* Circuit overlay */}
-          <div className="pointer-events-none absolute inset-0 mix-blend-screen opacity-25">
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(56,189,248,0.12)_1px,transparent_1px),linear-gradient(0deg,rgba(56,189,248,0.08)_1px,transparent_1px),linear-gradient(135deg,rgba(94,234,212,0.08)_1px,transparent_1px)] bg-[size:180px_180px,180px_180px,220px_220px]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(56,189,248,0.2),transparent_16%),radial-gradient(circle_at_38%_62%,rgba(94,234,212,0.2),transparent_14%),radial-gradient(circle_at_78%_28%,rgba(236,72,153,0.2),transparent_16%),radial-gradient(circle_at_62%_82%,rgba(244,114,182,0.16),transparent_14%)]" />
+          <div className="pointer-events-none absolute inset-0 opacity-15">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(193,155,76,0.15)_1px,transparent_1px),linear-gradient(0deg,rgba(222,192,119,0.12)_1px,transparent_1px),linear-gradient(135deg,rgba(233,211,157,0.1)_1px,transparent_1px)] bg-[size:180px_180px,180px_180px,220px_220px]" />
           </div>
 
           {/* Floating chips (static/deterministic props) */}
           {[
             {
               className:
-                "left-[8%] top-[18%] h-7 w-7 rounded-lg border border-cyan-300/50 bg-cyan-400/20 blur-[1px]",
+                "left-[8%] top-[18%] h-7 w-7 rounded-lg border border-[#DEC077] bg-[#E9D39D]/30 blur-[1px]",
               y: -12,
               rot: 8,
               dur: 6,
@@ -65,7 +64,7 @@ export default function Hero() {
             },
             {
               className:
-                "right-[10%] top-[26%] h-9 w-9 rounded-xl border border-fuchsia-300/50 bg-fuchsia-400/15 blur-[1px]",
+                "right-[10%] top-[26%] h-9 w-9 rounded-xl border border-[#C19B4C]/60 bg-[#DEC077]/20 blur-[1px]",
               y: 14,
               rot: -10,
               dur: 7,
@@ -73,7 +72,7 @@ export default function Hero() {
             },
             {
               className:
-                "left-1/2 bottom-[18%] h-11 w-11 -translate-x-1/2 rounded-2xl border border-amber-300/50 bg-amber-400/15 blur-[1px]",
+                "left-1/2 bottom-[18%] h-11 w-11 -translate-x-1/2 rounded-2xl border border-[#DEC077] bg-[#E9D39D]/25 blur-[1px]",
               y: -10,
               rot: 12,
               dur: 8,
@@ -81,7 +80,7 @@ export default function Hero() {
             },
             {
               className:
-                "left-[18%] bottom-[26%] h-6 w-6 rounded-md border border-emerald-300/50 bg-emerald-300/15 blur-[1px]",
+                "left-[18%] bottom-[26%] h-6 w-6 rounded-md border border-[#C19B4C]/50 bg-[#E9D39D]/30 blur-[1px]",
               y: 10,
               rot: -6,
               dur: 6.5,
@@ -108,7 +107,7 @@ export default function Hero() {
         </>
       )}
 
-      <div className="relative mx-auto max-w-[94rem] flex min-h-[92vh] px-[5vw] flex-col gap-12 pt-10  pb-15 sm:pb-24 md:flex-row md:items-center md:gap-10">
+      <div className="relative mx-auto max-w-[94rem] flex min-h-[92vh] px-[5vw] flex-col gap-12 pt-10 pb-15 sm:pb-24 md:flex-row md:items-center md:gap-10">
         {/* Left content */}
         <motion.div
           initial={{ opacity: 0, x: -24 }}
@@ -122,20 +121,20 @@ export default function Hero() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="inline-flex items-center text-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur"
+            className="inline-flex items-center text-center gap-2 rounded-full border border-[#DEC077] bg-[#E9D39D]/50 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#221F1A] backdrop-blur"
           >
             Carmel College of Engineering and Technology presents
           </motion.div>
 
-          {/* NEW: Spark the date badge! 🔥 */}
+          {/* Spark the date badge! */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mx-auto md:mx-0 inline-flex items-center gap-3 rounded-full border border-cyan-300/30 bg-cyan-500/10 px-5 py-3 text-xs font-bold text-cyan-200 backdrop-blur-sm"
+            className="mx-auto md:mx-0 inline-flex items-center gap-3 rounded-full border border-[#DEC077] bg-[#E9D39D] px-5 py-2.5 text-xs font-bold text-[#221F1A] shadow-sm backdrop-blur-sm"
           >
-            <span className="h-1 w-1 sm:h-3 sm:w-3 rounded-full bg-cyan-400 animate-ping" />
+            <span className="h-2 w-2 rounded-full bg-[#C19B4C] animate-ping" />
             <span>October 8 - 9, 2026</span>
           </motion.div>
 
@@ -144,12 +143,12 @@ export default function Hero() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-3xl font-bold leading-tight text-white sm:text-3xl lg:text-3xl"
+            className="text-3xl font-bold leading-tight text-[#221F1A] sm:text-4xl lg:text-4xl"
           >
-            <span className="relative block mt-2 text-6xl sm:text-4xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-fuchsia-500 to-amber-400">
+            <span className="relative block mt-2 text-6xl sm:text-5xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C]">
               Sparkz 2K26
             </span>
-            Innvovation Unleashed
+            Innovation Unleashed
           </motion.h1>
 
           <motion.p
@@ -157,7 +156,7 @@ export default function Hero() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.65, ease: "easeOut" }}
-            className="max-w-lg text-[17px] text-white/80 sm:text-[17px]"
+            className="max-w-lg text-[17px] text-[#221F1A]/80 sm:text-[17px]"
           >
             The fest where students compete, create, and spark something big.
           </motion.p>
@@ -165,17 +164,12 @@ export default function Hero() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
             <Link
               href="/events"
-              className="group text-[14px] inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-400 px-6 py-3 text-base font-semibold text-white shadow-[0_20px_80px_rgba(99,102,241,0.35)] transition hover:scale-[1.02] hover:shadow-[0_20px_90px_rgba(236,72,153,0.45)]"
+              className="group text-[15px] inline-flex items-center justify-center gap-2 rounded-full bg-[#E9D39D] hover:bg-[#DEC077] border border-[#DEC077] px-7 py-3 text-base font-semibold text-[#221F1A] shadow-[0_10px_30px_rgba(222,192,119,0.35)] transition-all hover:scale-[1.02]"
             >
               Join Now
-              <span className="transition group-hover:translate-x-1">→</span>
+              <span className="transition group-hover:translate-x-1 text-[#C19B4C]">→</span>
             </Link>
           </div>
-
-          {/* <div className="grid max-w-2xl sm:w-2.5 grid-cols-1 gap-3 text-sm sm:grid-cols-3">
-            <Stat label="Engineering Tracks" value="Robotics • AI • IoT" />
-            <Stat label="Prize Pool" value="₹5L+" />
-          </div> */}
         </motion.div>
 
         {/* Right visual */}
@@ -217,19 +211,19 @@ export default function Hero() {
                     }}
                   >
                     {p.i % 3 === 0 && (
-                      <div className="h-3 w-3 rounded-full bg-cyan-400 shadow-[0_0_16px_#06b6d4] blur-[1px]" />
+                      <div className="h-3 w-3 rounded-full bg-[#DEC077] shadow-[0_0_12px_#DEC077] blur-[1px]" />
                     )}
                     {p.i % 3 === 1 && (
-                      <div className="h-2 w-2 rotate-45 border border-fuchsia-400 shadow-[0_0_12px_#ec4899]" />
+                      <div className="h-2 w-2 rotate-45 border border-[#C19B4C] shadow-[0_0_12px_#C19B4C]" />
                     )}
                     {p.i % 3 === 2 && (
-                      <div className="h-4 w-4 rounded-sm bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_20px_#f59e0b] blur-[2px]" />
+                      <div className="h-4 w-4 rounded-sm bg-gradient-to-br from-[#E9D39D] to-[#C19B4C] shadow-[0_0_15px_#C19B4C] blur-[1px]" />
                     )}
                   </motion.div>
                 );
               })}
 
-            {/* Logo container — no circular background, no border */}
+            {/* Logo container */}
             <motion.div
               className="relative flex h-full w-full items-center justify-center bg-transparent"
               animate={{ y: [0, -10, 0] }}
@@ -240,7 +234,7 @@ export default function Hero() {
                 alt="Sparkz Logo"
                 fill
                 priority
-                className="object-contain drop-shadow-[0_14px_36px_rgba(236,72,153,0.35)]"
+                className="object-contain drop-shadow-[0_14px_36px_rgba(193,155,76,0.25)]"
                 sizes="(max-width: 768px) 200px, 280px"
               />
             </motion.div>
