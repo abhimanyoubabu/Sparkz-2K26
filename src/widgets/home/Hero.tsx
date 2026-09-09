@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import ParticleImage from "@/widgets/common/ParticleImage";
 
 export default function Hero() {
 
@@ -180,7 +180,7 @@ export default function Hero() {
           transition={{ duration: 0.75, ease: "easeOut" }}
           className="order-1 relative flex w-full items-center justify-center md:order-2 md:w-1/2 md:-mt-6"
         >
-          <div className="relative pl-5 h-46 w-46 sm:h-74 sm:w-74">
+          <div className="relative pl-5 h-80 w-64 sm:h-[28rem] sm:w-96">
             {mounted &&
               particles.map((p) => {
                 const angleRad = (p.angle * Math.PI) / 180;
@@ -223,21 +223,37 @@ export default function Hero() {
                 );
               })}
 
-            {/* Logo container */}
-            <motion.div
-              className="relative flex h-full w-full items-center justify-center bg-transparent"
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Image
-                src="/sparkz.svg"
-                alt="Sparkz Logo"
-                fill
-                priority
-                className="object-contain drop-shadow-[0_14px_36px_rgba(193,155,76,0.25)]"
-                sizes="(max-width: 768px) 200px, 280px"
-              />
-            </motion.div>
+            {/* Particle Logo */}
+            <ParticleImage
+              imageConfig={{
+                image: "/sparkz.svg",
+                mode: "fit",
+                scale: 11,
+              }}
+              particleColor="original"
+              particleShape="circle"
+              particleCount={150}
+              particleSize={6}
+              hoverEnabled
+              hoverConfig={{
+                hoverType: "roam",
+                transition: { duration: 1, ease: "easeInOut" },
+                roamOpacity: 0.85,
+                roamShape: "oval",
+              }}
+              repulsionEnabled
+              repulsionConfig={{
+                repulsionMode: "outside",
+                repulsionForce: 10,
+                repulsionRadius: 70,
+              }}
+              autoCycle
+              cycleInterval={5000}
+              holdDuration={2500}
+              width="100%"
+              height="100%"
+              className="absolute inset-0"
+            />
           </div>
         </motion.div>
       </div>

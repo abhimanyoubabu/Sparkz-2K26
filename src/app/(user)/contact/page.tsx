@@ -7,21 +7,21 @@ import Head from "next/head";
 const coordinators = [
   {
     role: "Staff Coordinator",
-    name: "Mr. Vipin G. Namboothiri",
-    phone: "+91 97447 64927",
-    email: "vipin@example.com", // Add actual email if available
+    name: "Dr. Kannan C. Bhanu",
+    phone: "+91 94963 31267",
+    email: "[EMAIL_ADDRESS]",
   },
   {
     role: "Student Coordinator",
-    name: "Abhilash Chandran J",
-    phone: "+91 87148 38918",
-    email: "abhilash@example.com", // Add actual email if available
+    name: "Mr. Steev Palliath",
+    phone: "+91 62358 34190",
+    email: "[EMAIL_ADDRESS]",
   },
 ];
 
 const contactInfo = {
   address: "Carmel College of Engineering & Technology, Kerala, India",
-  generalEmail: "info@sparkz.carmelcet.in",
+  generalEmail: "sparkz@carmelcet.in",
   website: "sparkz.carmelcet.in",
 };
 
