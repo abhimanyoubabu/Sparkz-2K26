@@ -73,14 +73,14 @@ function EventCard({
               src={event.imageUrl}
               alt={event.title || "Event poster"}
               fill
-              unoptimized
+              quality={50}
               priority={idx < 4}
               sizes="
                 (max-width: 640px) 100vw,
                 (max-width: 1024px) 50vw,
                 25vw
               "
-              className="rounded-2xl object-contain"
+              className="rounded-2xl object-cover"
             />
           ) : (
             <Image
@@ -93,7 +93,7 @@ function EventCard({
                 (max-width: 1024px) 50vw,
                 25vw
               "
-              className="rounded-2xl object-contain"
+              className="rounded-2xl object-cover"
             />
           )}
 

@@ -223,10 +223,13 @@ export default function Hero() {
                 );
               })}
 
+            {/* Ambient golden backlight behind logo */}
+            <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(217,155,38,0.22),rgba(193,155,76,0.08)_50%,transparent_70%)] blur-2xl" />
+
             {/* Particle Logo */}
             <ParticleImage
               imageConfig={{
-                image: "/sparkz.svg",
+                image: "/extracted_sparkz.png",
                 mode: "fit",
                 scale: 11,
               }}
@@ -237,19 +240,19 @@ export default function Hero() {
               hoverEnabled
               hoverConfig={{
                 hoverType: "roam",
-                transition: { duration: 1, ease: "easeInOut" },
+                transition: { duration: 0.8, ease: "easeInOut" },
                 roamOpacity: 0.85,
                 roamShape: "oval",
               }}
               repulsionEnabled
               repulsionConfig={{
                 repulsionMode: "outside",
-                repulsionForce: 10,
-                repulsionRadius: 70,
+                repulsionForce: 8,
+                repulsionRadius: 65,
               }}
               autoCycle
-              cycleInterval={5000}
-              holdDuration={2500}
+              cycleInterval={4500}
+              holdDuration={2200}
               width="100%"
               height="100%"
               className="absolute inset-0"
