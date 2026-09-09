@@ -1,9 +1,8 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { db, storage } from "@/utils/firebase";
+import { db } from "@/utils/firebase";
 import { collection, getDocs, doc, setDoc, deleteDoc, query, where, addDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2, FiEdit2, FiSave, FiX, FiUploadCloud } from "react-icons/fi";
 import { toastError, toastSuccess } from "@/utils/common/Toast";
@@ -18,7 +17,7 @@ export default function EventsManagement() {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-    
+
     // Form State
     const initialFormState: Partial<Event> = {
         title: "",
@@ -76,17 +75,17 @@ export default function EventsManagement() {
     };
 
     const removeArrayItem = (field: keyof Event, index: number) => {
-         /* eslint-disable @typescript-eslint/no-explicit-any */
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         const currentArray = (formData[field] as string[]) || [];
         setFormData({ ...formData, [field]: currentArray.filter((_, i) => i !== index) });
     };
-    
+
     // Coordinators Helper
     const addCoordinator = () => {
         const current = formData.coordinators || [];
         setFormData({ ...formData, coordinators: [...current, { name: "", phone: "" }] });
     };
-    
+
     const removeCoordinator = (index: number) => {
         const current = formData.coordinators || [];
         setFormData({ ...formData, coordinators: current.filter((_, i) => i !== index) });
@@ -104,7 +103,7 @@ export default function EventsManagement() {
         const current = formData.extraFields || [];
         setFormData({ ...formData, extraFields: [...current, { name: "", type: "text" }] });
     };
-    
+
     const removeExtraField = (index: number) => {
         const current = formData.extraFields || [];
         setFormData({ ...formData, extraFields: current.filter((_, i) => i !== index) });
@@ -126,7 +125,7 @@ export default function EventsManagement() {
                 q = query(collection(db, "events"));
             } else if (userData?.role === 'admin' && userData?.department) {
                 // Filter by department for regular admins
-                 // Note: This relies on manual entry matching the department string exactly.
+                // Note: This relies on manual entry matching the department string exactly.
                 q = query(collection(db, "events"), where("department", "==", userData.department));
             } else {
                 setEvents([]);
@@ -135,7 +134,7 @@ export default function EventsManagement() {
             }
 
             const querySnapshot = await getDocs(q);
-            
+
             /* eslint-disable @typescript-eslint/no-explicit-any */
             const eventsList = querySnapshot.docs.map(doc => {
                 const data = doc.data();
@@ -147,7 +146,7 @@ export default function EventsManagement() {
                     bgImageUrl: data.bgImageUrl || data.bgImage || "",
                 };
             }) as Event[];
-            
+
             setEvents(eventsList);
         } catch (error) {
             console.error("Error fetching events:", error);
@@ -176,10 +175,10 @@ export default function EventsManagement() {
             setFormData(event);
         } else {
             // Default to admin's department if not superAdmin
-            const defaultDept = userData?.role !== 'superAdmin' && userData?.department 
-                ? userData.department 
+            const defaultDept = userData?.role !== 'superAdmin' && userData?.department
+                ? userData.department
                 : "CSE";
-                
+
             setFormData({
                 ...initialFormState,
                 department: defaultDept
@@ -189,7 +188,7 @@ export default function EventsManagement() {
         setBgFile(null);
         setPosterPreview(event?.imageUrl || "");
         setBgPreview(event?.bgImageUrl || "");
-        
+
         if (event?.RegCloseTime) {
             setRegCloseTime(event.RegCloseTime);
         } else {
@@ -199,24 +198,42 @@ export default function EventsManagement() {
         setIsEditing(true);
     };
 
-    const handleImageUpload = async (file: File, path: string) => {
+    const handleImageUpload = async (
+        file: File,
+        eventId: string
+    ) => {
         try {
             const compressedFile = await compressImage(file);
-            const storageRef = ref(storage, path);
-            const snapshot = await uploadBytes(storageRef, compressedFile);
-            return await getDownloadURL(snapshot.ref);
+
+            const formData = new FormData();
+            formData.append("file", compressedFile);
+            formData.append("eventId", eventId);
+
+            const response = await fetch("/api/google-drive/upload-event", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to upload image");
+            }
+
+            return {
+                url: data.url,
+                fileId: data.fileId,
+            };
         } catch (error) {
-           console.error("Image compression failed, uploading original:", error);
-           const storageRef = ref(storage, path);
-           const snapshot = await uploadBytes(storageRef, file);
-           return await getDownloadURL(snapshot.ref);
+            console.error("Google Drive upload failed:", error);
+            throw error;
         }
     };
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
 
         // Strict Validation
         if (!formData.title?.trim()) return toastError("Title is required");
@@ -233,8 +250,8 @@ export default function EventsManagement() {
         // }
 
         if (!formData.id && !posterFile) {
-             toastError("Event Poster is required for new events.");
-             return;
+            toastError("Event Poster is required for new events.");
+            return;
         }
 
         setUploading(true);
@@ -249,12 +266,21 @@ export default function EventsManagement() {
             const eventId = (formData as any).id || formData.title?.toLowerCase().replace(/\s+/g, '-') || 'new-event';
 
             if (posterFile) {
-                // Determine path based on if it's new or existing to avoid clutter, though timestamp handles it. 
-                // Ideally delete old image if replacing, but that's an optimization for later.
-                imageUrl = await handleImageUpload(posterFile, `events/${eventId}/poster_${Date.now()}.webp`);
+                const uploadedPoster = await handleImageUpload(
+                    posterFile,
+                    eventId
+                );
+
+                imageUrl = uploadedPoster.url;
             }
+
             if (bgFile) {
-                bgImageUrl = await handleImageUpload(bgFile, `events/${eventId}/bg_${Date.now()}.webp`);
+                const uploadedBackground = await handleImageUpload(
+                    bgFile,
+                    eventId
+                );
+
+                bgImageUrl = uploadedBackground.url;
             }
 
 
@@ -282,7 +308,7 @@ export default function EventsManagement() {
             };
 
             await setDoc(doc(db, "events", eventId), eventData);
-            
+
             toastSuccess(formData.id ? "Event updated" : "Event created");
             setIsEditing(false);
             fetchEvents();
@@ -300,11 +326,11 @@ export default function EventsManagement() {
         <div className="text-white max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
-                   <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">Event Management</h1>
-                   <p className="text-gray-400 text-sm mt-1">Manage and organize all college events</p>
+                    <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">Event Management</h1>
+                    <p className="text-gray-400 text-sm mt-1">Manage and organize all college events</p>
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
-                    <button 
+                    <button
                         onClick={() => startEdit()}
                         className="w-full md:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl flex justify-center items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20"
                     >
@@ -329,42 +355,42 @@ export default function EventsManagement() {
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Basic Info</h3>
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Title <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         required
-                                        value={formData.title} 
-                                        onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Description <span className="text-red-500">*</span></label>
-                                    <textarea 
+                                    <textarea
                                         rows={5}
                                         required
-                                        value={formData.description} 
-                                        onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Department</label>
-                                        <select 
-                                            value={formData.department} 
-                                            onChange={(e) => setFormData({...formData, department: e.target.value})}
+                                        <select
+                                            value={formData.department}
+                                            onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                             disabled={userData.role !== 'superAdmin'}
                                         >
-                                            {userData?.department ?  <option key={userData?.department} value={userData?.department}>{userData?.department}</option> : departments.map(d => <option key={d} value={d}>{d}</option>)}
+                                            {userData?.department ? <option key={userData?.department} value={userData?.department}>{userData?.department}</option> : departments.map(d => <option key={d} value={d}>{d}</option>)}
                                         </select>
                                     </div>
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Category</label>
-                                        <select 
+                                        <select
                                             /* eslint-disable @typescript-eslint/no-explicit-any */
-                                            value={formData.type} 
-                                            onChange={(e) => setFormData({...formData, type: e.target.value as any})}
+                                            value={formData.type}
+                                            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         >
                                             <option value="technical">Technical</option>
@@ -374,26 +400,26 @@ export default function EventsManagement() {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Media & Details</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="border border-dashed border-gray-700 rounded-lg p-6 text-center hover:bg-gray-800/50 transition-colors cursor-pointer relative flex flex-col items-center justify-center overflow-hidden h-64">
-                                        <input 
-                                            type="file" 
+                                        <input
+                                            type="file"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
                                                 if (file) {
                                                     setPosterFile(file);
                                                     setPosterPreview(URL.createObjectURL(file));
                                                 }
-                                            }} 
-                                            className="absolute inset-0 opacity-0 cursor-pointer z-10" 
-                                            accept="image/*" 
+                                            }}
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            accept="image/*"
                                         />
                                         {posterPreview ? (
                                             <div className="relative w-full h-full">
-                                                 <Image src={posterPreview} alt="Poster Preview" fill className="object-contain" />
+                                                <Image src={posterPreview} alt="Poster Preview" fill className="object-contain" />
                                             </div>
                                         ) : (
                                             <>
@@ -403,23 +429,23 @@ export default function EventsManagement() {
                                         )}
                                     </div>
                                     <div className="border border-dashed border-gray-700 rounded-lg p-6 text-center hover:bg-gray-800/50 transition-colors cursor-pointer relative flex flex-col items-center justify-center overflow-hidden h-64">
-                                         <input 
-                                            type="file" 
+                                        <input
+                                            type="file"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
-                                                if(file) {
+                                                if (file) {
                                                     setBgFile(file);
                                                     setBgPreview(URL.createObjectURL(file));
                                                 }
-                                            }} 
-                                            className="absolute inset-0 opacity-0 cursor-pointer z-10" 
-                                            accept="image/*" 
+                                            }}
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            accept="image/*"
                                         />
                                         {bgPreview ? (
-                                             <div className="relative w-full h-full">
+                                            <div className="relative w-full h-full">
                                                 <Image src={bgPreview} alt="Bg Preview" fill className="object-cover opacity-50" />
                                                 <span className="absolute inset-0 flex items-center justify-center text-xs font-medium z-20">Click to Change</span>
-                                             </div>
+                                            </div>
                                         ) : (
                                             <>
                                                 <FiUploadCloud className="text-gray-400 mb-2" size={32} />
@@ -430,11 +456,11 @@ export default function EventsManagement() {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                     <div>
+                                    <div>
                                         <label className="block text-sm text-gray-400 mb-1">Event Type</label>
-                                        <select 
-                                            value={formData.eveType || 'ind'} 
-                                            onChange={(e) => setFormData({...formData, eveType: e.target.value as any})}
+                                        <select
+                                            value={formData.eveType || 'ind'}
+                                            onChange={(e) => setFormData({ ...formData, eveType: e.target.value as any })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         >
                                             <option value="ind">Individual</option>
@@ -443,20 +469,20 @@ export default function EventsManagement() {
                                     </div>
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Venue</label>
-                                        <input 
-                                            type="text" 
-                                            value={formData.venue || ''} 
-                                            onChange={(e) => setFormData({...formData, venue: e.target.value})}
+                                        <input
+                                            type="text"
+                                            value={formData.venue || ''}
+                                            onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 pt-2">
-                                    <input 
+                                    <input
                                         type="checkbox"
                                         id="isOnline"
                                         checked={formData.isOnline || false}
-                                        onChange={(e) => setFormData({...formData, isOnline: e.target.checked})}
+                                        onChange={(e) => setFormData({ ...formData, isOnline: e.target.checked })}
                                         className="w-4 h-4 rounded border-gray-700 bg-black/50 text-indigo-600 focus:ring-indigo-500"
                                     />
                                     <label htmlFor="isOnline" className="text-sm text-gray-400 select-none cursor-pointer">This is an Online Event</label>
@@ -465,25 +491,25 @@ export default function EventsManagement() {
                         </div>
 
                         {/* Section 2: Registration & Limits */}
-                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                             <div className="space-y-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Registration</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
 
                                         <label className="block text-sm text-gray-400 mb-1">Event Date</label>
-                                        <input 
-                                            type="date" 
+                                        <input
+                                            type="date"
                                             required
                                             value={formData.date ? formData.date.split('-').reverse().join('-') : ''}
                                             onChange={(e) => {
                                                 // Convert YYYY-MM-DD to DD-MM-YYYY
-                                                 const val = e.target.value;
-                                                 if (val) {
-                                                     setFormData({...formData, date: val.split('-').reverse().join('-')});
-                                                 } else {
-                                                     setFormData({...formData, date: ''});
-                                                 }
+                                                const val = e.target.value;
+                                                if (val) {
+                                                    setFormData({ ...formData, date: val.split('-').reverse().join('-') });
+                                                } else {
+                                                    setFormData({ ...formData, date: '' });
+                                                }
                                             }}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none date-picker-invert"
                                         />
@@ -491,16 +517,16 @@ export default function EventsManagement() {
 
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Reg Ends On <span className="text-red-500">*</span></label>
-                                        <input 
-                                            type="date" 
+                                        <input
+                                            type="date"
                                             required
                                             value={formData.regFinalDate ? formData.regFinalDate.split('-').reverse().join('-') : ''}
                                             onChange={(e) => {
                                                 const val = e.target.value;
-                                                if(val) {
-                                                    setFormData({...formData, regFinalDate: val.split('-').reverse().join('-')});
+                                                if (val) {
+                                                    setFormData({ ...formData, regFinalDate: val.split('-').reverse().join('-') });
                                                 } else {
-                                                     setFormData({...formData, regFinalDate: ''});
+                                                    setFormData({ ...formData, regFinalDate: '' });
                                                 }
                                             }}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none date-picker-invert"
@@ -509,20 +535,20 @@ export default function EventsManagement() {
                                     <div className="col-span-2">
                                         <label className="block text-sm text-gray-400 mb-1">Reg Ends Time <span className="text-red-500">*</span></label>
                                         <div className="flex items-center gap-2 bg-black/50 border border-gray-700 rounded-lg px-4 py-2 w-full sm:w-1/2">
-                                             <input 
-                                              type="number" min="0" max="23"
-                                              value={isNaN(regCloseTime.hours) ? '' : regCloseTime.hours}
-                                              onChange={e => setRegCloseTime({...regCloseTime, hours: Number(e.target.value)})}
-                                              className="w-full bg-transparent text-center outline-none text-lg font-mono"
-                                              placeholder="HH"
+                                            <input
+                                                type="number" min="0" max="23"
+                                                value={isNaN(regCloseTime.hours) ? '' : regCloseTime.hours}
+                                                onChange={e => setRegCloseTime({ ...regCloseTime, hours: Number(e.target.value) })}
+                                                className="w-full bg-transparent text-center outline-none text-lg font-mono"
+                                                placeholder="HH"
                                             />
                                             <span className="text-gray-500">:</span>
-                                             <input 
-                                              type="number" min="0" max="59"
-                                              value={isNaN(regCloseTime.minutes) ? '' : regCloseTime.minutes}
-                                              onChange={e => setRegCloseTime({...regCloseTime, minutes: Number(e.target.value)})}
-                                              className="w-full bg-transparent text-center outline-none text-lg font-mono"
-                                              placeholder="MM"
+                                            <input
+                                                type="number" min="0" max="59"
+                                                value={isNaN(regCloseTime.minutes) ? '' : regCloseTime.minutes}
+                                                onChange={e => setRegCloseTime({ ...regCloseTime, minutes: Number(e.target.value) })}
+                                                className="w-full bg-transparent text-center outline-none text-lg font-mono"
+                                                placeholder="MM"
                                             />
                                         </div>
                                     </div>
@@ -530,10 +556,10 @@ export default function EventsManagement() {
                                 </div>
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">External Reg Link (Optional)</label>
-                                    <input 
-                                        type="text" 
-                                        value={formData.regLink || ''} 
-                                        onChange={(e) => setFormData({...formData, regLink: e.target.value})}
+                                    <input
+                                        type="text"
+                                        value={formData.regLink || ''}
+                                        onChange={(e) => setFormData({ ...formData, regLink: e.target.value })}
                                         className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     />
                                 </div>
@@ -542,71 +568,71 @@ export default function EventsManagement() {
                             <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Participation Limits</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                     <div>
+                                    <div>
                                         <label className="block text-sm text-gray-400 mb-1">Min Members</label>
-                                        <input 
-                                            type="number" 
-                                            value={!isNaN(Number(formData.memberMinCount)) ? formData.memberMinCount : ''} 
-                                            onChange={(e) => setFormData({...formData, memberMinCount: parseInt(e.target.value)})}
+                                        <input
+                                            type="number"
+                                            value={!isNaN(Number(formData.memberMinCount)) ? formData.memberMinCount : ''}
+                                            onChange={(e) => setFormData({ ...formData, memberMinCount: parseInt(e.target.value) })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
-                                     <div>
+                                    <div>
                                         <label className="block text-sm text-gray-400 mb-1">Max Members</label>
-                                        <input 
-                                            type="number" 
-                                            value={!isNaN(Number(formData.memberMaxCount)) ? formData.memberMaxCount : ''} 
-                                            onChange={(e) => setFormData({...formData, memberMaxCount: parseInt(e.target.value)})}
+                                        <input
+                                            type="number"
+                                            value={!isNaN(Number(formData.memberMaxCount)) ? formData.memberMaxCount : ''}
+                                            onChange={(e) => setFormData({ ...formData, memberMaxCount: parseInt(e.target.value) })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
                                 </div>
-                                 <div className="grid grid-cols-2 gap-4">
-                                     <div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
                                         <label className="block text-sm text-gray-400 mb-1">Max Part. (Text)</label>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             placeholder="e.g. 30 Teams"
-                                            value={formData.maxParticipation || ''} 
-                                            onChange={(e) => setFormData({...formData, maxParticipation: e.target.value})}
+                                            value={formData.maxParticipation || ''}
+                                            onChange={(e) => setFormData({ ...formData, maxParticipation: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Min Part. (Text)</label>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             placeholder="e.g. 10 Teams"
-                                            value={formData.minParticipation || ''} 
-                                            onChange={(e) => setFormData({...formData, minParticipation: e.target.value})}
+                                            value={formData.minParticipation || ''}
+                                            onChange={(e) => setFormData({ ...formData, minParticipation: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
                                 </div>
                             </div>
-                         </div>
+                        </div>
 
                         {/* Section 3: Financials & Rules */}
-                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                             <div className="space-y-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Financials</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Fee <span className="text-red-500">*</span></label>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             required
-                                            value={formData.registrationFee} 
-                                            onChange={(e) => setFormData({...formData, registrationFee: e.target.value})}
+                                            value={formData.registrationFee}
+                                            onChange={(e) => setFormData({ ...formData, registrationFee: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Google Pay ID</label>
-                                        <input 
-                                            type="text" 
-                                            value={formData.gpay || ''} 
-                                            onChange={(e) => setFormData({...formData, gpay: e.target.value})}
+                                        <input
+                                            type="text"
+                                            value={formData.gpay || ''}
+                                            onChange={(e) => setFormData({ ...formData, gpay: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
                                         />
                                     </div>
@@ -619,9 +645,9 @@ export default function EventsManagement() {
                                     <div className="space-y-2 mt-2">
                                         {formData.upi?.map((u, idx) => (
                                             <div key={idx} className="flex gap-2">
-                                                <input 
-                                                    type="text" 
-                                                    value={u} 
+                                                <input
+                                                    type="text"
+                                                    value={u}
                                                     onChange={(e) => handleArrayInput('upi', e.target.value, idx)}
                                                     placeholder="UPI ID"
                                                     className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
@@ -634,32 +660,32 @@ export default function EventsManagement() {
                                 <div className="space-y-2 mt-4">
                                     <label className="block text-sm text-gray-400 mb-1">Prizes (Optional)</label>
                                     <div className="grid grid-cols-3 gap-2">
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             placeholder="1st Prize"
-                                            value={formData.firstPrize} 
-                                            onChange={(e) => setFormData({...formData, firstPrize: e.target.value})}
+                                            value={formData.firstPrize}
+                                            onChange={(e) => setFormData({ ...formData, firstPrize: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                         />
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             placeholder="2nd Prize"
-                                            value={formData.secondPrize || ''} 
-                                            onChange={(e) => setFormData({...formData, secondPrize: e.target.value})}
+                                            value={formData.secondPrize || ''}
+                                            onChange={(e) => setFormData({ ...formData, secondPrize: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                         />
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             placeholder="3rd Prize"
-                                            value={formData.thirdPrize || ''} 
-                                            onChange={(e) => setFormData({...formData, thirdPrize: e.target.value})}
+                                            value={formData.thirdPrize || ''}
+                                            onChange={(e) => setFormData({ ...formData, thirdPrize: e.target.value })}
                                             className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                             <div className="space-y-4">
+                            <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Rules & Guidelines</h3>
                                 <div>
                                     <label className="text-sm text-gray-400 mb-1 flex justify-between items-center">
@@ -669,9 +695,9 @@ export default function EventsManagement() {
                                     <div className="space-y-2 mt-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                         {formData.rules?.map((rule, idx) => (
                                             <div key={idx} className="flex gap-2">
-                                                <input 
-                                                    type="text" 
-                                                    value={rule} 
+                                                <input
+                                                    type="text"
+                                                    value={rule}
                                                     onChange={(e) => handleArrayInput('rules', e.target.value, idx)}
                                                     placeholder={`Rule ${idx + 1}`}
                                                     className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
@@ -685,9 +711,9 @@ export default function EventsManagement() {
                         </div>
 
                         {/* Section 4: Coordinators & Extras */}
-                         <div className="space-y-4">
+                        <div className="space-y-4">
                             <h3 className="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Coordinators & Extras</h3>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
@@ -697,19 +723,19 @@ export default function EventsManagement() {
                                     <div className="space-y-3">
                                         {formData.coordinators?.map((coord, idx) => (
                                             <div key={idx} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-gray-900/50 p-3 rounded-lg border border-gray-800/50">
-                                                <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     required
                                                     placeholder="Name"
-                                                    value={coord.name} 
+                                                    value={coord.name}
                                                     onChange={(e) => updateCoordinator(idx, 'name', e.target.value)}
                                                     className="w-full sm:flex-1 bg-black/50 border border-gray-700 rounded-lg px-4 py-2 outline-none text-sm"
                                                 />
-                                                 <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     required
                                                     placeholder="Phone"
-                                                    value={coord.phone} 
+                                                    value={coord.phone}
                                                     onChange={(e) => updateCoordinator(idx, 'phone', e.target.value)}
                                                     className="w-full sm:flex-1 bg-black/50 border border-gray-700 rounded-lg px-4 py-2 outline-none text-sm"
                                                 />
@@ -720,22 +746,22 @@ export default function EventsManagement() {
                                 </div>
 
                                 <div>
-                                     <div className="flex justify-between items-center mb-2">
+                                    <div className="flex justify-between items-center mb-2">
                                         <label className="text-sm text-gray-400">Extra Fields (Custom)</label>
                                         <button type="button" onClick={addExtraField} className="text-xs px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded hover:bg-indigo-500/20 transition-colors">+ Add Field</button>
                                     </div>
                                     <div className="space-y-3">
                                         {formData.extraFields?.map((field, idx) => (
                                             <div key={idx} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-gray-900/50 p-3 rounded-lg border border-gray-800/50">
-                                                <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     placeholder="Field Name"
-                                                    value={field.name} 
+                                                    value={field.name}
                                                     onChange={(e) => updateExtraField(idx, 'name', e.target.value)}
                                                     className="w-full sm:flex-1 bg-black/50 border border-gray-700 rounded-lg px-4 py-2 outline-none text-sm"
                                                 />
-                                                 <select 
-                                                    value={field.type} 
+                                                <select
+                                                    value={field.type}
                                                     onChange={(e) => updateExtraField(idx, 'type', e.target.value)}
                                                     className="w-full sm:w-32 bg-black/50 border border-gray-700 rounded-lg px-2 py-2 outline-none text-sm"
                                                 >
@@ -755,14 +781,14 @@ export default function EventsManagement() {
                         </div>
 
                         <div className="flex justify-end gap-4 pt-6 border-t border-gray-800 mt-6 stuck sticky bottom-0 bg-gray-900/95 p-4 -mx-4 -mb-4 md:-mx-8 md:-mb-8 backdrop-blur rounded-b-2xl shadow-2xl z-20">
-                            <button 
+                            <button
                                 type="button"
                                 onClick={() => setIsEditing(false)}
                                 className="px-6 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 type="submit"
                                 disabled={uploading}
                                 className="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors flex items-center gap-2 disabled:opacity-50 shadow-lg shadow-indigo-500/20"
@@ -787,17 +813,17 @@ export default function EventsManagement() {
                             <div className="p-5">
                                 <h3 className="text-lg font-bold text-white mb-1 truncate">{event.title}</h3>
                                 <div className="flex justify-between text-sm text-gray-500 mb-4">
-                                   <span>{event.type}</span>
-                                   <span>{event.date}</span>
+                                    <span>{event.type}</span>
+                                    <span>{event.date}</span>
                                 </div>
                                 <div className="flex gap-2 mt-4">
-                                    <button 
+                                    <button
                                         onClick={() => startEdit(event)}
                                         className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                     >
                                         <FiEdit2 /> Edit
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => handleDelete(event.id)}
                                         className="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
                                     >
