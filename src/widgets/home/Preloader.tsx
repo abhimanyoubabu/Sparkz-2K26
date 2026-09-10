@@ -9,18 +9,18 @@ export default function Preloader() {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#F9F6ED]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0B0E]"
     >
       <div className="relative flex flex-col items-center justify-center w-full max-w-lg">
         {/* Background Glow */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 0.4, scale: 1.2 }}
+          animate={{ opacity: 0.5, scale: 1.2 }}
           transition={{
             duration: 1.5,
             ease: "easeOut",
           }}
-          className="absolute h-64 w-64 rounded-full bg-[#DEC077]/30 blur-[100px]"
+          className="absolute h-64 w-64 rounded-full bg-[#3A270D]/60 blur-[100px]"
         />
 
         {/* Logo Container */}

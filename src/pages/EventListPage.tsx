@@ -56,13 +56,13 @@ function EventCard({
     >
       <Link
         href={`/events/${event.id}`}
-        className="block max-w-90 overflow-hidden rounded-2xl border border-[#DEC077] bg-[#FAF4E8] shadow-sm transition-all duration-300 hover:border-[#C19B4C] hover:shadow-lg hover:shadow-[#DEC077]/30"
+        className="block max-w-90 overflow-hidden rounded-2xl border border-[rgba(212,163,89,0.25)] bg-[#131318] shadow-sm transition-all duration-300 hover:border-[#F3C87A] hover:shadow-xl hover:shadow-[rgba(212,163,89,0.2)]"
       >
         {/* ==================================================
             POSTER FRAME
         ================================================== */}
 
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#FAF4E8]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#0B0B0E]">
 
           {/* ==================================================
               EVENT POSTER
@@ -274,7 +274,7 @@ export default function EventsPage() {
   // ==========================================================
 
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-[#F9F6ED] py-10 text-[#221F1A]">
+    <section className="relative isolate min-h-screen overflow-hidden bg-[#0B0B0E] py-10 text-white">
 
       {/* ====================================================
           BACKGROUND
@@ -311,7 +311,7 @@ export default function EventsPage() {
           ================================================== */}
 
           <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-            <span className="bg-gradient-to-r from-[#C19B4C] via-[#DEC077] to-[#C19B4C] bg-clip-text text-transparent">
+            <span className="gold-gradient-text">
               Sparkz Events
             </span>
           </h1>
@@ -320,7 +320,7 @@ export default function EventsPage() {
               DESCRIPTION
           ================================================== */}
 
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#221F1A]/80">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#A1A1AA]">
             Choose your battlefield, learn something new,
             and compete for glory — curated challenges
             across all departments.
@@ -348,9 +348,9 @@ export default function EventsPage() {
                   onClick={() =>
                     setSelectedDept(dept)
                   }
-                  className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DEC077] ${active
-                      ? "border-2 border-[#C19B4C] bg-[#E9D39D] font-bold text-[#221F1A] shadow-md"
-                      : "border border-[#DEC077] bg-white/70 text-[#221F1A]/80 hover:bg-[#E9D39D]/40 hover:text-[#221F1A]"
+                  className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F3C87A] ${active
+                      ? "border-2 border-[#F3C87A] bg-[#3A270D] font-bold text-[#F3C87A] shadow-md"
+                      : "border border-[rgba(212,163,89,0.25)] bg-[#131318] text-[#A1A1AA] hover:bg-[#1b1b22] hover:text-white hover:border-[#D4A359]"
                     }`}
                 >
                   {dept === "All"
@@ -379,11 +379,11 @@ export default function EventsPage() {
               (_, i) => (
                 <div
                   key={i}
-                  className="overflow-hidden rounded-2xl border border-[#DEC077]/50 bg-[#FAF4E8] shadow-sm"
+                  className="overflow-hidden rounded-2xl border border-[rgba(212,163,89,0.25)] bg-[#131318] shadow-sm"
                 >
-                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#E9D39D]/15">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#0B0B0E]">
 
-                    <div className="absolute inset-0 animate-shimmer skew-x-12 bg-gradient-to-r from-transparent via-[#E9D39D]/30 to-transparent" />
+                    <div className="absolute inset-0 animate-shimmer skew-x-12 bg-gradient-to-r from-transparent via-[rgba(212,163,89,0.1)] to-transparent" />
 
                   </div>
                 </div>
@@ -400,7 +400,7 @@ export default function EventsPage() {
 
           <Suspense
             fallback={
-              <div className="h-8 w-full rounded-lg bg-[#E9D39D]/20" />
+              <div className="h-8 w-full rounded-lg bg-[#131318]" />
             }
           >
 
@@ -438,7 +438,7 @@ export default function EventsPage() {
             FOOTER
         ================================================== */}
 
-        <div className="mt-12 border-t border-[#DEC077]/40 pt-6 text-center text-sm text-[#221F1A]/60">
+        <div className="mt-12 border-t border-[rgba(212,163,89,0.2)] pt-6 text-center text-sm text-[#A1A1AA]">
 
           <p>
             Can&apos;t find an event? Contact the tech
