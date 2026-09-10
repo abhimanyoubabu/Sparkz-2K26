@@ -75,7 +75,7 @@ export default function Register() {
   const [checkingExistingRegistration, setCheckingExistingRegistration] =
     useState(true);
 
-  // Registration ON/OFF
+  // Registration ON/OFF (git test)
   const [registrationOpen, setRegistrationOpen] =
     useState(true);
 
